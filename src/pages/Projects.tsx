@@ -56,7 +56,7 @@ export default function Projects() {
   return (
     <section
       style={{ fontFamily: '"Spline Sans", "Noto Sans", sans-serif' }}
-      className="flex flex-col w-full min-h-screen bg-transparent"
+      className="flex flex-col w-full  bg-transparent"
     >
       <div className="text-center mt-4 px-4 sm:px-8">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold">
