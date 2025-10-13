@@ -12,9 +12,9 @@ export default function SkillCategory({
 }) {
   return (
     <div className="mt-4 flex items-center justify-center gap-3">
-      {category.map((cat) => (
+      {category.map((cat, index) => (
         <Badge
-          key={cat}
+          key={index}
           className={`bg-[#E2E8F0] cursor-default text-black rounded-xl hover:bg-[#E2E8F0]  ${
             activeTab === cat
               ? "bg-[#5c8a84] hover:bg-[#5c8a84] text-[#FFFFFF]"
