@@ -9,7 +9,7 @@ interface SkillCardProps {
 }
 
 const SkillCard: React.FC<SkillCardProps> = ({ icon: Icon, title, level }) => (
-  <div className="flex flex-1 flex-col gap-3 rounded-2xl border border-[#d4e2e1] bg-[#f9fbfb] p-5 shadow-sm hover:shadow-md transition-shadow min-w-[200px]">
+  <div className="flex flex-1 flex-col gap-3 rounded-2xl border border-[#d4e2e1] bg-[#f9fbfb] p-5 shadow-sm hover:shadow-md transition-shadow min-w-[180px]">
     <div className="flex items-center gap-3">
       <div className="p-2 rounded-lg bg-[#e6f1f0] text-[#101817]">
         <Icon size={20} />
@@ -25,7 +25,7 @@ const SkillCard: React.FC<SkillCardProps> = ({ icon: Icon, title, level }) => (
 const TechPortfolio: React.FC = () => {
   return (
     <div
-      className="flex h-auto min-h-screen w-full flex-col overflow-x-hidden px-4 sm:px-8"
+      className="flex h-auto min-h-screen w-[85%] mx-auto flex-col overflow-x-hidden px-4 sm:px-8"
       style={{ fontFamily: '"Spline Sans", "Noto Sans", sans-serif' }}
     >
       <main className="py-12 mt-10 gap-8 mx-auto w-full max-w-[1200px] flex flex-col">

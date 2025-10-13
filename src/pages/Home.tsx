@@ -8,7 +8,7 @@ export default function Home() {
   const [micHover, setMicHover] = useState(false);
 
   return (
-    <div className="flex flex-col w-full min-h-screen">
+    <div className="flex flex-col w-[85%] mx-auto min-h-screen">
       <div className="flex flex-col-reverse lg:flex-row w-full max-w-6xl mx-auto items-center lg:justify-between px-4 py-12 gap-10">
         <div className="lg:w-2/3 text-center lg:text-left">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-snug">
