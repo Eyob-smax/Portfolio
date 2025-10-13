@@ -56,11 +56,13 @@ export default function Projects() {
   return (
     <section
       style={{ fontFamily: '"Spline Sans", "Noto Sans", sans-serif' }}
-      className="h-screen bg-[transparent] flex flex-col w-full"
+      className="flex flex-col w-full min-h-screen bg-transparent"
     >
-      <div className="text-center mt-2">
-        <h1 className="text-[38px] font-semibold">My Projects</h1>
-        <p className="mt-3 text-sm font-semibold">
+      <div className="text-center mt-4 px-4 sm:px-8">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold">
+          My Projects
+        </h1>
+        <p className="mt-2 text-sm sm:text-base md:text-lg font-semibold">
           A collection of my work, from web apps to full-stack platforms.
         </p>
       </div>
@@ -71,16 +73,19 @@ export default function Projects() {
         setActiveTab={setActiveTab}
       />
 
-      <div className=" mt-8 pt-5 max-w-[80%] mx-auto">
+      <div className="mt-8 pt-5 w-full max-w-full sm:max-w-[90%] lg:max-w-[80%] mx-auto relative">
         <div
           ref={scrollRef}
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          className="flex items-stretch gap-5 overflow-x-scroll no-scrollbar scroll-smooth"
+          className="flex gap-5 overflow-x-auto sm:overflow-x-scroll no-scrollbar scroll-smooth px-4 sm:px-0"
           style={{ scrollBehavior: "smooth" }}
         >
           {filteredProjects.map((project, idx) => (
-            <div key={idx} className=" flex items-stretch">
+            <div
+              key={idx}
+              className="flex-shrink-0 w-full sm:w-[300px] md:w-[350px] lg:w-[400px]"
+            >
               <ProjectCard project={project} />
             </div>
           ))}
@@ -88,7 +93,7 @@ export default function Projects() {
 
         <button
           onClick={() => setIsPaused(!isPaused)}
-          className=" top-2 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
+          className="absolute top-2 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
         >
           {isPaused ? <Play size={20} /> : <Pause size={20} />}
         </button>
