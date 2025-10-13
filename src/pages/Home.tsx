@@ -9,7 +9,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col w-full min-h-screen">
-      <div className="flex flex-col lg:flex-row-reverse w-full max-w-6xl mx-auto items-center lg:justify-between px-4 py-12 gap-10">
+      <div className="flex flex-col-reverse lg:flex-row w-full max-w-6xl mx-auto items-center lg:justify-between px-4 py-12 gap-10">
         <div className="lg:w-2/3 text-center lg:text-left">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-snug">
             HI, I'M EYOB SIMACHEW —{" "}
