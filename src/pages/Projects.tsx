@@ -84,7 +84,7 @@ export default function Projects() {
           {filteredProjects.map((project, idx) => (
             <div
               key={idx}
-              className="flex-shrink-0 w-full sm:w-[300px] md:w-[350px] lg:w-[400px]"
+              className="flex w-full sm:w-[300px] md:w-[350px] lg:w-[400px]"
             >
               <ProjectCard project={project} />
             </div>
