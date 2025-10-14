@@ -55,6 +55,7 @@ export default function Projects() {
 
   return (
     <section
+      id="projects"
       style={{ fontFamily: '"Spline Sans", "Noto Sans", sans-serif' }}
       className="flex flex-col w-full  bg-transparent"
     >
