@@ -21,4 +21,5 @@ export interface IProjects {
   source: string;
   visit: string;
   class: TCategories[];
+  detailedDescription?: string;
 }
