@@ -14,10 +14,6 @@ import { Badge } from "@/components/ui/badge";
 import { Link, useParams } from "react-router-dom";
 import { projects } from "@/lib/data";
 
-const createSlug = (title: string): string => {
-  return title.toLowerCase().replace(/\s/g, "-");
-};
-
 interface ProjectImage {
   url: string;
   imagePos?: string;
@@ -45,7 +41,6 @@ export default function ProjectsDetail() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Set the title for the Header component
   const headerTitle = currentProject
     ? `Eyob Simachew | ${currentProject.title}`
     : "Eyob Simachew | Project Not Found";
@@ -81,7 +76,7 @@ export default function ProjectsDetail() {
 
     intervalRef.current = setInterval(() => {
       setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-    }, 3000);
+    }, 2000);
   };
 
   const handleNext = () => {
@@ -97,7 +92,7 @@ export default function ProjectsDetail() {
   };
 
   return (
-    <section className="relative inset-0 min-h-screen bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] bg-[#F6F7F8] flex flex-col w-full px-4 sm:px-6 lg:px-12">
+    <section className="relative inset-0 min-h-screen bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] bg-[#F6F7F8] flex flex-col w-full px-4 sm:px-2 lg:px-12">
       <Header title={headerTitle} tabLinks={[]} />
 
       <Link

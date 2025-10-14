@@ -46,7 +46,14 @@ export const projects: IProjects[] = [
       { url: Parcel_tracker, imagePos: "top" },
     ],
     class: ["full-stack"],
-    tags: ["React", "Supabase", "TypeScript", "TailwindCSS", "Shadcn UI"],
+    tags: [
+      "React",
+      "Supabase",
+      "TypeScript",
+      "TailwindCSS",
+      "Shadcn UI",
+      "Redux",
+    ],
     source: "https://github.com/Eyob-smax/United-parcel-service",
     visit: "https://united-parcel-service.vercel.app/",
     detailedDescription: `United Parcel Service
@@ -68,7 +75,14 @@ With a responsive design, dynamic API integration, and smooth dashboard interact
       { url: ExpenseTracker_settings, imagePos: "top" },
     ],
     class: ["frontend"],
-    tags: ["React", "TypeScript", "CSS", "Tailwind", "Supabase", "Redux"],
+    tags: [
+      "React",
+      "TypeScript",
+      "TailwindCSS",
+      "Supabase",
+      "Redux",
+      "ShadcnUI",
+    ],
     source: "https://github.com/Eyob-smax/Expense-Tracker",
     visit: "https://expense-tracker-one-taupe.vercel.app/",
     detailedDescription: `Expense Tracker — Simplify Your Finances
@@ -92,7 +106,7 @@ This project showcases both technical craftsmanship and a strong emphasis on use
     ],
     class: ["full-stack", "backend"],
     tags: [
-      "Node",
+      "NodeJS",
       "ExpressJS",
       "Postgres",
       "Supabase",
