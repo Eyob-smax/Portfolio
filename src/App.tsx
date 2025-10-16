@@ -6,7 +6,7 @@ import Skills from "./pages/Skills";
 function App() {
   return (
     <div className="relative inset-0 w-full bg-[linear-gradient(to_right,#5c8a8441,transparent_1px),linear-gradient(to_bottom,#5c8a8441,transparent_1px)] bg-[size:24px_24px]">
-      <div className=" top-0 right-0 left-0 z-50">
+      <div className="sticky top-0 right-0 left-0 z-50">
         <Header
           title="Eyob Simachew"
           tabLinks={[

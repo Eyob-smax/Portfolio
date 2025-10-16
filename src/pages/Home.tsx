@@ -3,12 +3,13 @@ import { Bot } from "lucide-react";
 import { useState } from "react";
 import profile from "../assets/Profile.jpg";
 import { SiTypescript } from "react-icons/si";
+import { motion } from "motion/react";
 
 export default function Home() {
   const [micHover, setMicHover] = useState(false);
 
   return (
-    <div className="flex flex-col w-[85%] mx-auto min-h-screen">
+    <div className="flex flex-col w-[85%] mx-auto max-h-screen">
       <div className="flex flex-col-reverse lg:flex-row w-full max-w-6xl mx-auto items-center lg:justify-between px-4 py-12 gap-10">
         <div className="lg:w-2/3 text-center lg:text-left">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-snug">
@@ -29,15 +30,25 @@ export default function Home() {
             </Button>
           </div>
         </div>
-        <div className="flex justify-center lg:justify-end">
-          <div className="rounded-full overflow-hidden border-4 border-[#5c8a84] w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64">
-            <img
-              className="w-full h-full object-cover"
-              src={profile}
-              alt="Profile"
-            />
+        <motion.div
+          initial={{ y: 0 }}
+          animate={{ y: [0, 10, 0] }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
+          <div className="flex  justify-center lg:justify-end">
+            <div className="rounded-full overflow-hidden border-4 border-[#5c8a84] w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64">
+              <img
+                className="w-full h-full object-cover"
+                src={profile}
+                alt="Profile"
+              />
+            </div>
           </div>
-        </div>
+        </motion.div>
       </div>
       <div
         onMouseOver={() => setMicHover(true)}

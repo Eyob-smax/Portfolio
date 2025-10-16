@@ -215,7 +215,7 @@ The project showcases an understanding of **user-centered design principles**, c
       "AssemblyAI",
     ],
     source: "https://github.com/Eyob-smax/Voice_To_Text-Bot",
-    visit: "https://voice-to-text-bot.vercel.app/",
+    visit: "https://t.me/voice_T_text_bot/",
     detailedDescription: `Voice Transcriber Bot — Turn Voice Messages into Instant Text
 
 Voice Transcriber Bot is a Telegram-based automation tool that instantly converts voice messages into text, making communication effortless even when users can’t listen to audio. Designed for convenience and real-world practicality, it provides fast, reliable, and privacy-friendly transcription powered by modern AI.
@@ -238,7 +238,7 @@ This bot demonstrates both technical depth and creative problem-solving, turning
     class: ["telegram-bot"],
     tags: ["NodeJS", "ExpressJS", "Telegraf", "ytdl-core"],
     source: "https://github.com/Eyob-smax/Media-Downloader-bot",
-    visit: "https://media-downloader-bot.vercel.app/",
+    visit: "https://t.me/yt_video_dowloader_bot/",
     detailedDescription: `Turbo Social Media Downloader Bot — Fast, Reliable, and Scalable
 
 Turbo Social Media Downloader Bot is a high-performance Telegram bot designed to download and convert media from major social platforms like TikTok, YouTube, Instagram, Facebook, and Twitter. Built with Node.js and the Telegram Bot API, it enables users to download videos or extract audio—individually or in bulk—with lightning-fast performance.
