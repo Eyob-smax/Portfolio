@@ -1,7 +1,7 @@
 import React from "react";
 import { Palette, Server, Hammer } from "lucide-react";
 import { tech_stack } from "@/lib/data";
-import { motion } from "motion/react";
+import { motion, type Variants } from "framer-motion"; // Correct import
 
 interface SkillCardProps {
   icon: React.ElementType;
@@ -27,7 +27,7 @@ const SkillCard: React.FC<SkillCardProps> = ({ icon: Icon, title, level }) => (
   </motion.div>
 );
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -37,13 +37,17 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 100, scale: 0.8 },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { type: "spring", stiffness: 120, damping: 10 },
+    transition: {
+      type: "spring",
+      stiffness: 120,
+      damping: 10,
+    },
   },
 };
 
