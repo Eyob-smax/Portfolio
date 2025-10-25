@@ -133,7 +133,6 @@ const DevJournal = () => {
         </div>
       )}
 
-      {/* Telegram CTA */}
       <div className="flex justify-center mt-10">
         <a
           href="https://t.me/devwitheyob"

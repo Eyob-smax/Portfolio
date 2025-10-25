@@ -9,6 +9,7 @@ import AISection from "./AiSection";
 export type TConversation = {
   message: string;
   type: "user" | "ai";
+  id: string;
 };
 
 export default function Home() {

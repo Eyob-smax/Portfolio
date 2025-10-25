@@ -2,128 +2,229 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, X } from "lucide-react";
-import type { Dispatch, FormEvent, SetStateAction } from "react";
-import { useState, useRef, useEffect } from "react";
-import ReactMarkdown from "react-markdown"; // New import for Markdown rendering
+import type { FormEvent } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import type { TConversation } from "./Home";
+import { v4 as uuidv4 } from "uuid";
 
-const API_ENDPOINT = "http://localhost:9200/query";
+// Custom CSS for Markdown rendering
+const markdownStyles = `
+  .markdown-content {
+    line-height: 1.5;
+    font-size: 0.9rem;
+  }
+  .markdown-content p {
+    margin-bottom: 0.75rem;
+  }
+  .markdown-content strong {
+    font-weight: 700;
+  }
+  .markdown-content em {
+    font-style: italic;
+  }
+  .markdown-content ul, .markdown-content ol {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+  }
+  .markdown-content li {
+    margin-bottom: 0.25rem;
+  }
+`;
+
+const STREAM_ENDPOINT = "http://localhost:9000/ai/stream";
+const MAX_INPUT_LENGTH = 500;
 
 export default function AISection({
   setShowAiSection,
   convs,
   setConvs,
 }: {
-  setShowAiSection: Dispatch<SetStateAction<boolean>>;
+  setShowAiSection: React.Dispatch<React.SetStateAction<boolean>>;
   convs: TConversation[] | null;
-  setConvs: Dispatch<SetStateAction<TConversation[] | null>>;
+  setConvs: React.Dispatch<React.SetStateAction<TConversation[] | null>>;
 }) {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const eventSourceRef = useRef<EventSource | null>(null);
+  const hasReceivedData = useRef(false);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scroll({
       top: messagesEndRef.current.scrollHeight,
       behavior: "smooth",
     });
-  };
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
-  }, [convs]);
+  }, [convs, scrollToBottom]);
+
+  useEffect(() => {
+    // Inject custom styles for Markdown
+    const styleSheet = document.createElement("style");
+    styleSheet.textContent = markdownStyles;
+    document.head.appendChild(styleSheet);
+
+    return () => {
+      eventSourceRef.current?.close();
+      document.head.removeChild(styleSheet);
+    };
+  }, []);
+
+  function startStream(topic: string, aiMessageId: string) {
+    eventSourceRef.current?.close();
+    hasReceivedData.current = false;
+
+    const eventSource = new EventSource(
+      `${STREAM_ENDPOINT}?topic=${encodeURIComponent(topic)}`
+    );
+    eventSourceRef.current = eventSource;
+
+    // Timeout to prevent hanging
+    const timeout = setTimeout(() => {
+      console.error("SSE stream timed out");
+      setConvs((prev) => {
+        if (!prev) return [];
+        return prev.map((msg) =>
+          msg.id === aiMessageId
+            ? { ...msg, message: "⚠️ Stream timed out." }
+            : msg
+        );
+      });
+      eventSource.close();
+      setIsLoading(false);
+    }, 30000); // 30 seconds timeout
+
+    eventSource.onmessage = (event: MessageEvent) => {
+      try {
+        // Parse JSON-stringified chunk from backend
+        const chunk = JSON.parse(event.data);
+        console.log("Received chunk:", chunk); // Debug log
+        hasReceivedData.current = true;
+        setConvs((prev) => {
+          if (!prev) return [];
+          return prev.map((msg) =>
+            msg.id === aiMessageId
+              ? {
+                  ...msg,
+                  message: msg.message.replace("Thinking...", "") + chunk,
+                }
+              : msg
+          );
+        });
+        scrollToBottom();
+      } catch (err) {
+        console.error(
+          "Failed to parse SSE data:",
+          err,
+          "Raw data:",
+          event.data
+        );
+      }
+    };
+
+    eventSource.onerror = () => {
+      clearTimeout(timeout);
+      console.log("SSE onerror triggered"); // Debug log
+      if (!hasReceivedData.current) {
+        setConvs((prev) => {
+          if (!prev) return [];
+          return prev.map((msg) =>
+            msg.id === aiMessageId
+              ? { ...msg, message: "⚠️ Stream ended unexpectedly or failed." }
+              : msg
+          );
+        });
+      }
+      setIsLoading(false);
+      eventSource.close();
+    };
+
+    eventSource.addEventListener("error", (event: MessageEvent) => {
+      clearTimeout(timeout);
+      try {
+        const errorData = JSON.parse(event.data);
+        console.error("SSE error event:", errorData);
+        setConvs((prev) => {
+          if (!prev) return [];
+          return prev.map((msg) =>
+            msg.id === aiMessageId
+              ? {
+                  ...msg,
+                  message: `⚠️ Error: ${
+                    errorData.error || "Unknown error occurred"
+                  }`,
+                }
+              : msg
+          );
+        });
+      } catch (err) {
+        console.error(
+          "Failed to parse SSE error event:",
+          err,
+          "Raw data:",
+          event.data
+        );
+      }
+      setIsLoading(false);
+      eventSource.close();
+    });
+
+    eventSource.addEventListener("end", () => {
+      clearTimeout(timeout);
+      console.log("SSE end event received"); // Debug log
+      setIsLoading(false);
+      eventSource.close();
+    });
+  }
 
   async function addConversation(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const userMessage = inputValue.trim();
-
-    if (!userMessage || isLoading) {
+    if (!userMessage || isLoading || userMessage.length > MAX_INPUT_LENGTH)
       return;
-    }
 
-    // Add user message to conversations
+    const userMessageId = uuidv4();
+    const aiMessageId = uuidv4();
+
     setConvs((prev) => [
       ...(prev || []),
-      { message: userMessage, type: "user" },
+      { id: userMessageId, message: userMessage, type: "user" },
+      { id: aiMessageId, message: "Thinking...", type: "ai" },
     ]);
 
     setInputValue("");
     setIsLoading(true);
-
-    try {
-      // Add loading message
-      const loadingMessage: TConversation = {
-        message: "Thinking...",
-        type: "ai",
-      };
-      setConvs((prev) => [...(prev || []), loadingMessage]);
-
-      const response = await fetch(API_ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query: userMessage }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`API request failed with status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      const finalAiMessageText =
-        data.data?.content || "No response received from AI.";
-
-      // Replace loading message with AI response
-      setConvs((prev) => {
-        if (!prev) return null;
-        const updatedConvs = [...prev];
-        updatedConvs[updatedConvs.length - 1] = {
-          message: finalAiMessageText,
-          type: "ai",
-        };
-        return updatedConvs;
-      });
-    } catch (error) {
-      console.error("Error querying AI API:", error);
-
-      // Handle error by updating the loading message
-      setConvs((prev) => {
-        if (!prev) return null;
-        const updatedConvs = [...prev];
-        updatedConvs[updatedConvs.length - 1] = {
-          message:
-            "Sorry, I couldn't reach the server. Check the console for errors.",
-          type: "ai",
-        };
-        return updatedConvs;
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    startStream(userMessage, aiMessageId);
   }
 
   return (
     <div className="z-40 fixed bottom-4 right-4 h-[70%] w-full max-h-[600px] sm:w-[400px]">
       <div className="relative h-full w-full bg-white shadow-2xl rounded-xl flex flex-col">
-        {/* Header Section */}
+        {/* Header */}
         <div className="border-b flex items-center justify-center w-full py-3 px-4 bg-[#4b7f7a] rounded-t-xl">
           <h1 className="text-white text-center text-lg font-medium">
             AI Assistance
           </h1>
-          <X
+          <button
             onClick={() => setShowAiSection(false)}
-            className="absolute right-4 text-white cursor-pointer w-5 h-5"
-          />
+            aria-label="Close AI chat"
+            className="absolute right-4 text-white cursor-pointer"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        {/* Messages Display */}
+        {/* Messages */}
         <div
           className="flex-grow w-full overflow-y-auto p-4 space-y-3 bg-[#ecedee]"
           ref={messagesEndRef}
+          role="log"
+          aria-live="polite"
         >
           {!convs || convs.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center p-4">
@@ -136,12 +237,13 @@ export default function AISection({
               </p>
             </div>
           ) : (
-            convs.map(({ message, type }, index) => (
+            convs.map(({ id, message, type }) => (
               <div
-                key={index}
+                key={id}
                 className={`flex w-full ${
                   type === "user" ? "justify-end" : "justify-start"
                 }`}
+                role="article"
               >
                 <Badge
                   className={`py-2 px-3 whitespace-pre-wrap max-w-[80%] text-left shadow-md ${
@@ -151,7 +253,11 @@ export default function AISection({
                   }`}
                 >
                   {type === "ai" ? (
-                    <ReactMarkdown>{message}</ReactMarkdown>
+                    <div className="markdown-content">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {message}
+                      </ReactMarkdown>
+                    </div>
                   ) : (
                     message
                   )}
@@ -161,7 +267,7 @@ export default function AISection({
           )}
         </div>
 
-        {/* Input Form */}
+        {/* Input */}
         <div className="p-3 border-t bg-white">
           <form
             onSubmit={addConversation}
@@ -174,14 +280,18 @@ export default function AISection({
               className="flex-grow border-gray-300 focus:border-[#4b7f7a]"
               name="message"
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={(e) =>
+                setInputValue(e.target.value.slice(0, MAX_INPUT_LENGTH))
+              }
               autoComplete="off"
               disabled={isLoading}
+              aria-label="Enter your message"
             />
             <Button
               type="submit"
               className="bg-[#4b7f7a] hover:bg-[#5c8a84] p-2 h-10 w-10 transition-colors duration-150"
               disabled={!inputValue.trim() || isLoading}
+              aria-label="Send message"
             >
               {isLoading ? (
                 <svg
