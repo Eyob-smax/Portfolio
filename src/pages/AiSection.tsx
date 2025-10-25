@@ -9,7 +9,6 @@ import remarkGfm from "remark-gfm";
 import type { TConversation } from "./Home";
 import { v4 as uuidv4 } from "uuid";
 
-// Custom CSS for Markdown rendering
 const markdownStyles = `
   .markdown-content {
     line-height: 1.5;
@@ -63,7 +62,6 @@ export default function AISection({
   }, [convs, scrollToBottom]);
 
   useEffect(() => {
-    // Inject custom styles for Markdown
     const styleSheet = document.createElement("style");
     styleSheet.textContent = markdownStyles;
     document.head.appendChild(styleSheet);
@@ -83,26 +81,22 @@ export default function AISection({
     );
     eventSourceRef.current = eventSource;
 
-    // Timeout to prevent hanging
     const timeout = setTimeout(() => {
-      console.error("SSE stream timed out");
       setConvs((prev) => {
         if (!prev) return [];
         return prev.map((msg) =>
           msg.id === aiMessageId
-            ? { ...msg, message: "⚠️ Stream timed out." }
+            ? { ...msg, message: "⚠️ Stream timed out. Try again later!" }
             : msg
         );
       });
       eventSource.close();
       setIsLoading(false);
-    }, 30000); // 30 seconds timeout
+    }, 15000);
 
     eventSource.onmessage = (event: MessageEvent) => {
       try {
-        // Parse JSON-stringified chunk from backend
         const chunk = JSON.parse(event.data);
-        console.log("Received chunk:", chunk); // Debug log
         hasReceivedData.current = true;
         setConvs((prev) => {
           if (!prev) return [];
@@ -128,7 +122,6 @@ export default function AISection({
 
     eventSource.onerror = () => {
       clearTimeout(timeout);
-      console.log("SSE onerror triggered"); // Debug log
       if (!hasReceivedData.current) {
         setConvs((prev) => {
           if (!prev) return [];
@@ -175,7 +168,6 @@ export default function AISection({
 
     eventSource.addEventListener("end", () => {
       clearTimeout(timeout);
-      console.log("SSE end event received"); // Debug log
       setIsLoading(false);
       eventSource.close();
     });
@@ -205,7 +197,6 @@ export default function AISection({
   return (
     <div className="z-40 fixed bottom-4 right-4 h-[70%] w-full max-h-[600px] sm:w-[400px]">
       <div className="relative h-full w-full bg-white shadow-2xl rounded-xl flex flex-col">
-        {/* Header */}
         <div className="border-b flex items-center justify-center w-full py-3 px-4 bg-[#4b7f7a] rounded-t-xl">
           <h1 className="text-white text-center text-lg font-medium">
             AI Assistance
@@ -219,7 +210,6 @@ export default function AISection({
           </button>
         </div>
 
-        {/* Messages */}
         <div
           className="flex-grow w-full overflow-y-auto p-4 space-y-3 bg-[#ecedee]"
           ref={messagesEndRef}
@@ -267,7 +257,6 @@ export default function AISection({
           )}
         </div>
 
-        {/* Input */}
         <div className="p-3 border-t bg-white">
           <form
             onSubmit={addConversation}
