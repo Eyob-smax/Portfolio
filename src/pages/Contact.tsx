@@ -93,7 +93,7 @@ const ContactPage = () => {
         <div className="w-full max-w-[960px] bg-white p-6 sm:p-8 rounded-lg shadow-md">
           <div className="text-center mb-10">
             <h1 className="text-3xl sm:text-4xl font-bold mb-2">
-              Connect with John Doe
+              Connect with Eyob Simachew
             </h1>
             <p className="text-[#334d49]/70 text-base sm:text-lg">
               Professional Solutions for Your Business Needs.
@@ -101,7 +101,6 @@ const ContactPage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            {/* ✅ Contact form */}
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <InputField
@@ -148,7 +147,6 @@ const ContactPage = () => {
               </button>
             </form>
 
-            {/* ✅ Contact info section */}
             <div className="flex flex-col gap-8 p-6 bg-[#f0f7f6] rounded-lg">
               <div>
                 <h3 className="text-xl font-bold mb-3">Contact Information</h3>
