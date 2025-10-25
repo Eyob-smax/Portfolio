@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Send, X } from "lucide-react";
 import type { Dispatch, FormEvent, SetStateAction } from "react";
 import { useState, useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown"; // New import for Markdown rendering
 import type { TConversation } from "./Home";
 
 const API_ENDPOINT = "http://localhost:9200/query";
@@ -20,10 +21,8 @@ export default function AISection({
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Reference for the messages container
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Function to scroll to the bottom of the messages
   const scrollToBottom = () => {
     messagesEndRef.current?.scroll({
       top: messagesEndRef.current.scrollHeight,
@@ -31,7 +30,6 @@ export default function AISection({
     });
   };
 
-  // Scroll to bottom whenever conversations update
   useEffect(() => {
     scrollToBottom();
   }, [convs]);
@@ -152,7 +150,11 @@ export default function AISection({
                       : "bg-white text-gray-800 rounded-tl-none border border-gray-200"
                   }`}
                 >
-                  {message}
+                  {type === "ai" ? (
+                    <ReactMarkdown>{message}</ReactMarkdown>
+                  ) : (
+                    message
+                  )}
                 </Badge>
               </div>
             ))

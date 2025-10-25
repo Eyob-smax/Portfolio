@@ -1,5 +1,7 @@
 import Header from "./components/Header";
+import ContactPage from "./pages/Contact";
 import Home from "./pages/Home";
+import JournalSection from "./pages/JounalIntegration";
 import Projects from "./pages/Projects";
 import Skills from "./pages/Skills";
 
@@ -20,6 +22,8 @@ function App() {
       <Home />
       <Projects />
       <Skills />
+      <JournalSection />
+      <ContactPage />
     </div>
   );
 }
