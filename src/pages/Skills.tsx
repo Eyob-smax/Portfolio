@@ -59,13 +59,13 @@ const TechPortfolio: React.FC = () => {
     >
       <main className="py-5 mt-8 gap-8 mx-auto w-full max-w-[1200px] flex flex-col">
         <section>
-          <h1 className="text-3xl sm:text-4xl text-center font-bold text-[#101817] mb-6">
+          <h1 className="text-3xl sm:text-4xl text-center font-bold text-[#101817] mb-2">
             Tech Stack & Tools
           </h1>
 
           {tech_stack.map((category) => (
             <div key={category.category} className="mb-10">
-              <h2 className="text-xl font-semibold text-[#101817] mb-4 flex items-center gap-2">
+              <h2 className="text-xl font-semibold text-[#101817] mb-2 flex items-center gap-2">
                 {category.category === "Frontend" && (
                   <Palette size={18} className="text-[#5c8a84]" />
                 )}

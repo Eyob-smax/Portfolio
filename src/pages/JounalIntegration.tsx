@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Send } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface ITag {
   id: number;
@@ -13,6 +15,7 @@ interface IPostTag {
 }
 
 interface IPost {
+  createdAt: string | Date;
   post: string;
   date_string: string;
   date: Date;
@@ -32,6 +35,8 @@ const DevJournal = () => {
         const res = await fetch("http://localhost:9000/posts?topic=ai&max=3");
         if (!res.ok) throw new Error("Failed to fetch posts");
         const data = await res.json();
+        console.log(data);
+
         setPosts(data);
       } catch (err) {
         setError((err as Error).message);
@@ -97,34 +102,47 @@ const DevJournal = () => {
       {!loading && !error && (
         <div className="grid max-h-[75vh] py-5 overflow-y-scroll grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredPosts.length > 0 ? (
-            filteredPosts.map((post, index) => (
-              <div
-                key={post.post_link || index}
-                className="bg-white dark:bg-[#1e1e1e] p-6 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 animate-fade-up"
-                style={{
-                  animationDelay: `${index * 120}ms`,
-                  animationFillMode: "forwards",
-                }}
-              >
-                <p className="text-sm text-[#5c8a84] mb-2 font-medium">
-                  {post.tags.map((t) => t.tag.tag).join(", ")}
-                </p>
-                <p className="text-lg font-bold mb-3">{post.date_string}</p>
-                <p className="text-base text-[#333]/80 dark:text-[#e0e0e0]/80 mb-4 leading-relaxed">
-                  {post.post.length > 200
-                    ? post.post.slice(0, 200) + "..."
-                    : post.post}
-                </p>
-                <a
-                  href={post.post_link || "https://t.me/devwitheyob"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#5c8a84] hover:underline font-semibold"
+            filteredPosts.map((post, index) => {
+              const truncatedPost =
+                post.post.length > 200
+                  ? post.post.slice(0, 200) + "..."
+                  : post.post;
+
+              return (
+                <div
+                  key={post.post_link || index}
+                  className="bg-white dark:bg-[#1e1e1e] p-6 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 animate-fade-up"
+                  style={{
+                    animationDelay: `${index * 120}ms`,
+                    animationFillMode: "forwards",
+                  }}
                 >
-                  Read More →
-                </a>
-              </div>
-            ))
+                  <p className="text-sm text-[#5c8a84] mb-2 font-medium">
+                    {post.tags.map((t) => t.tag.tag).join(", ")}
+                  </p>
+                  <p className="text-lg font-bold mb-3">
+                    {new Date(post.createdAt).toLocaleDateString(undefined, {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </p>
+                  <div className="text-balance text-[#333]/80 dark:text-[#e0e0e0]/80 mb-4 leading-relaxed prose prose-sm dark:prose-invert max-w-none">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {truncatedPost}
+                    </ReactMarkdown>
+                  </div>
+                  <a
+                    href={post.post_link || "https://t.me/devwitheyob"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#5c8a84] hover:underline font-semibold"
+                  >
+                    Read More →
+                  </a>
+                </div>
+              );
+            })
           ) : (
             <p className="text-center col-span-full text-gray-500">
               No posts found for “{selectedTag}”.
