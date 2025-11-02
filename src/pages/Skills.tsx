@@ -11,7 +11,7 @@ interface SkillCardProps {
 
 const SkillCard: React.FC<SkillCardProps> = ({ icon: Icon, title, level }) => (
   <motion.div
-    className="flex flex-1 flex-col gap-3 rounded-2xl border border-[#d4e2e1] bg-[#f9fbfb] p-3 text-sm shadow-sm min-w-[180px]"
+    className="flex flex-1 grow flex-col gap-3 rounded-2xl border border-[#d4e2e1] bg-[#f9fbfb] p-3 text-sm shadow-sm min-w-[150px]"
     whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.15)" }}
     whileTap={{ scale: 0.95 }}
   >
