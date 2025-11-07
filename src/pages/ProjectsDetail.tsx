@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import Header from "@/components/Header";
-// Removed all static image imports since all images come from the data file via 'projects'
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeft,
