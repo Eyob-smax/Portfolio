@@ -147,7 +147,7 @@ export default function Home() {
       {showNotice && (
         <Notice
           title="Ask AI about me!"
-          message="You can now ask AI questions about my skills, projects, and experience and much more. Give it a try!"
+          message="You can now ask AI questions in the chat section about my skills, projects, and experience and much more. Give it a try!"
           type="info"
           duration={TIMEOUT_DURATION}
         />
