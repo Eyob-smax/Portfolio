@@ -17,7 +17,7 @@ export default function Header({ title, tabLinks }: THeader) {
     <header className="w-full py-2 bg-[#F6F7F7] flex flex-col sm:flex-row items-center px-4 sm:px-8 gap-2 sm:gap-0">
       <div
         onClick={() => scrollToSection("#home")}
-        className="flex items-center gap-2 sm:gap-3"
+        className="flex cursor-pointer items-center gap-2 sm:gap-3"
       >
         <i className="text-2xl">
           <FcApproval />
