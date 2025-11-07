@@ -2,12 +2,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, X } from "lucide-react";
-import type { FormEvent } from "react";
+import type { FormEvent, RefObject } from "react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { TConversation } from "./Home";
 import { v4 as uuidv4 } from "uuid";
+import Swal from "sweetalert2";
 
 const markdownStyles = `
   .markdown-content {
@@ -33,16 +34,19 @@ const markdownStyles = `
 `;
 
 const STREAM_ENDPOINT = "http://localhost:9000/ai/stream";
-const MAX_INPUT_LENGTH = 500;
+const MAX_INPUT_LENGTH = 200;
+const TIMEOUT_DURATION = 100000;
 
 export default function AISection({
   setShowAiSection,
   convs,
   setConvs,
+  ref,
 }: {
   setShowAiSection: React.Dispatch<React.SetStateAction<boolean>>;
   convs: TConversation[] | null;
   setConvs: React.Dispatch<React.SetStateAction<TConversation[] | null>>;
+  ref: RefObject<HTMLDivElement | null>;
 }) {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -86,17 +90,17 @@ export default function AISection({
         if (!prev) return [];
         return prev.map((msg) =>
           msg.id === aiMessageId
-            ? { ...msg, message: "⚠️ Stream timed out. Try again later!" }
+            ? { ...msg, message: "⚠️ Stream timed out. Check your connection." }
             : msg
         );
       });
       eventSource.close();
       setIsLoading(false);
-    }, 15000);
+    }, TIMEOUT_DURATION);
 
     eventSource.onmessage = (event: MessageEvent) => {
       try {
-        const chunk = JSON.parse(event.data);
+        const chunk = event.data;
         hasReceivedData.current = true;
         setConvs((prev) => {
           if (!prev) return [];
@@ -136,36 +140,6 @@ export default function AISection({
       eventSource.close();
     };
 
-    eventSource.addEventListener("error", (event: MessageEvent) => {
-      clearTimeout(timeout);
-      try {
-        const errorData = JSON.parse(event.data);
-        console.error("SSE error event:", errorData);
-        setConvs((prev) => {
-          if (!prev) return [];
-          return prev.map((msg) =>
-            msg.id === aiMessageId
-              ? {
-                  ...msg,
-                  message: `⚠️ Error: ${
-                    errorData.error || "Unknown error occurred"
-                  }`,
-                }
-              : msg
-          );
-        });
-      } catch (err) {
-        console.error(
-          "Failed to parse SSE error event:",
-          err,
-          "Raw data:",
-          event.data
-        );
-      }
-      setIsLoading(false);
-      eventSource.close();
-    });
-
     eventSource.addEventListener("end", () => {
       clearTimeout(timeout);
       setIsLoading(false);
@@ -177,8 +151,22 @@ export default function AISection({
     e.preventDefault();
 
     const userMessage = inputValue.trim();
-    if (!userMessage || isLoading || userMessage.length > MAX_INPUT_LENGTH)
+    if (!userMessage) return;
+    if (isLoading) return;
+    if (userMessage.length > MAX_INPUT_LENGTH) {
+      Swal.fire({
+        icon: "warning",
+        title: "Input Error",
+        text: `Message exceeds maximum length (${MAX_INPUT_LENGTH} characters).`,
+      });
       return;
+    }
+
+    if (userMessage.toLowerCase() === "clear") {
+      setConvs([]);
+      setInputValue("");
+      return;
+    }
 
     const userMessageId = uuidv4();
     const aiMessageId = uuidv4();
@@ -195,7 +183,10 @@ export default function AISection({
   }
 
   return (
-    <div className="z-40 fixed bottom-4 right-4 h-[70%] w-full max-h-[600px] sm:w-[400px]">
+    <div
+      ref={ref}
+      className="z-40 fixed bottom-4 right-4 h-[70%] w-full max-h-[600px] sm:w-[400px]"
+    >
       <div className="relative h-full w-full bg-white shadow-2xl rounded-xl flex flex-col">
         <div className="border-b flex items-center justify-center w-full py-3 px-4 bg-[#4b7f7a] rounded-t-xl">
           <h1 className="text-white text-center text-lg font-medium">
@@ -218,13 +209,13 @@ export default function AISection({
         >
           {!convs || convs.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center p-4">
-              <h1 className="font-extrabold text-2xl text-purple-600 mb-2">
-                💬✨ Ask Me Anything!
+              <h1 className="font-extrabold text-xl mb-2">
+                Ask Me Anything about Eyob!
               </h1>
-              <p className="text-gray-600 text-base">
+              {/* <p className="text-gray-600 text-base">
                 I'm here to help with information about{" "}
                 <span className="text-indigo-700 font-semibold">Eyob</span>.
-              </p>
+              </p> */}
             </div>
           ) : (
             convs.map(({ id, message, type }) => (
@@ -264,7 +255,11 @@ export default function AISection({
           >
             <Input
               placeholder={
-                isLoading ? "Waiting for AI..." : "Ask me about Eyob..."
+                isLoading
+                  ? "Waiting for AI..."
+                  : convs && convs?.length > 0
+                  ? "type `clear` to start fresh or ask another question!"
+                  : "Ask me about Eyob..."
               }
               className="flex-grow border-gray-300 focus:border-[#4b7f7a]"
               name="message"

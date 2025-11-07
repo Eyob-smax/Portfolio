@@ -1,6 +1,14 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
+import Swal from "sweetalert2";
 import { MdEmail, MdPhone, MdLocationOn } from "react-icons/md";
-import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
+import {
+  FaTwitter,
+  FaInstagram,
+  FaLinkedinIn,
+  FaGithub,
+  FaTelegram,
+} from "react-icons/fa";
+import { BASE_URL } from "./JounalIntegration";
 
 const InputField = ({
   label,
@@ -22,7 +30,7 @@ const InputField = ({
   <label className="flex text-sm flex-col flex-1">
     <p className="text-[#334d49] text-base font-medium leading-normal pb-2">
       {label}
-      {required && <span className="text-[#5c8a84]">*</span>}
+      {required ? <span className="text-[#5c8a84]">*</span> : null}
     </p>
     <input
       className="w-full text-sm h-10 rounded-lg border border-[#d5dddc] bg-[#f0f7f6] p-[15px] text-[#334d49] placeholder:text-[#334d49]/60 focus:outline-none focus:ring-2 focus:ring-[#5c8a84]/50 transition-all"
@@ -74,6 +82,7 @@ const ContactPage = () => {
     subject: "",
     message: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -82,13 +91,55 @@ const ContactPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+
+    if (!formData.name || !formData.email || !formData.message) {
+      Swal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: "Name, email, and message are required.",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(`${BASE_URL}/message`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData?.message || "Failed to send message.");
+      }
+
+      Swal.fire({
+        icon: "success",
+        title: "Message Sent!",
+        text: "Your message has been sent successfully.",
+        timer: 500,
+      });
+
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: (error as Error).message || "Something went wrong.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#f0f7f6] font-display text-[#334d49] flex flex-col">
+    <div
+      id="contact"
+      className="min-h-screen w-full bg-[#f0f7f6] font-display text-[#334d49] flex flex-col"
+    >
       <main className="flex-1 flex justify-center px-6 sm:px-10 md:px-20 lg:px-40 py-10">
         <div className="w-full max-w-[960px] bg-white p-6 sm:p-8 rounded-lg shadow-md">
           <div className="text-center mb-10">
@@ -109,7 +160,6 @@ const ContactPage = () => {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="Enter your name"
-                  required
                 />
                 <InputField
                   label="Email"
@@ -118,7 +168,6 @@ const ContactPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter your email"
-                  required
                 />
               </div>
 
@@ -140,10 +189,11 @@ const ContactPage = () => {
               />
 
               <button
-                className="w-full sm:w-auto h-12 px-6 rounded-lg bg-[#5c8a84] text-white font-bold hover:bg-[#496e69] transition-colors"
+                className="w-full sm:w-auto h-12 px-6 rounded-lg bg-[#5c8a84] text-white font-bold hover:bg-[#496e69] transition-colors disabled:opacity-70"
                 type="submit"
+                disabled={loading}
               >
-                Send Message
+                {loading ? "Sending..." : "Send Message"}
               </button>
             </form>
 
@@ -154,26 +204,24 @@ const ContactPage = () => {
                   <li className="flex items-center gap-3">
                     <MdEmail className="text-[#5c8a84] w-6 h-6" />
                     <a
-                      href="mailto:contact@johndoe.com"
+                      href="mailto:eyobsmax@gmail.com"
                       className="text-[#334d49]/80 hover:text-[#5c8a84] transition-colors"
                     >
-                      contact@johndoe.com
+                      eyobsmax@gmail.com
                     </a>
                   </li>
                   <li className="flex items-center gap-3">
                     <MdPhone className="text-[#5c8a84] w-6 h-6" />
                     <a
-                      href="tel:+1234567890"
+                      href="tel:+251980263141"
                       className="text-[#334d49]/80 hover:text-[#5c8a84] transition-colors"
                     >
-                      +1 (234) 567-890
+                      +2519 80 26 31 41
                     </a>
                   </li>
                   <li className="flex items-center gap-3">
                     <MdLocationOn className="text-[#5c8a84] w-6 h-6" />
-                    <p className="text-[#334d49]/80">
-                      123 Business Rd, Suite 456, City, State 12345
-                    </p>
+                    <p className="text-[#334d49]/80">Addis Ababa, Ethiopia</p>
                   </li>
                 </ul>
               </div>
@@ -181,10 +229,28 @@ const ContactPage = () => {
               <div>
                 <h3 className="text-xl font-bold mb-3">Connect with Me</h3>
                 <div className="flex gap-6">
-                  {[FaFacebookF, FaTwitter, FaInstagram].map((Icon, idx) => (
+                  {[
+                    {
+                      href: "https://github.com/Eyob-smax",
+                      icon: FaGithub,
+                    },
+                    {
+                      href: "https://t.me/alnova19",
+                      icon: FaTelegram,
+                    },
+                    {
+                      href: "https://www.linkedin.com/in/eyob-simachew",
+                      icon: FaLinkedinIn,
+                    },
+                    { href: "https://x.com/eyoba_smax", icon: FaTwitter },
+                    {
+                      href: "https://www.instagram.com/eyoba_smax",
+                      icon: FaInstagram,
+                    },
+                  ].map(({ href, icon: Icon }, idx) => (
                     <a
                       key={idx}
-                      href="#"
+                      href={href}
                       className="text-[#334d49]/80 hover:text-[#5c8a84] transition-colors"
                     >
                       <Icon className="w-7 h-7" />
@@ -199,7 +265,7 @@ const ContactPage = () => {
 
       <footer className="w-full border-t border-[#d5dddc] py-6 bg-white">
         <p className="text-center text-[#334d49]/60 text-sm">
-          © 2024 John Doe. All rights reserved.
+          © 2024 Eyob Simachew. All rights reserved.
         </p>
       </footer>
     </div>

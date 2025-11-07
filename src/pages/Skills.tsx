@@ -54,6 +54,7 @@ const itemVariants: Variants = {
 const TechPortfolio: React.FC = () => {
   return (
     <div
+      id="skills"
       className="flex h-auto min-h-screen w-[95%] md:w-[85%] flex-col overflow-x-hidden px-2 sm:px-4 md:px-8 mx-auto"
       style={{ fontFamily: '"Spline Sans", "Noto Sans", sans-serif' }}
     >

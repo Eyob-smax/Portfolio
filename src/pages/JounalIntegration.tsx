@@ -23,6 +23,9 @@ interface IPost {
   PostTag: IPostTag[];
 }
 
+export const BASE_URL = "http://localhost:9000";
+const MAX_POSTS = 6;
+
 const DevJournal = () => {
   const [selectedTag, setSelectedTag] = useState<string>("All");
   const [posts, setPosts] = useState<IPost[]>([]);
@@ -32,7 +35,7 @@ const DevJournal = () => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("http://localhost:9000/posts?topic=ai&max=3");
+        const res = await fetch(`${BASE_URL}/posts?max=${MAX_POSTS}`);
         if (!res.ok) throw new Error("Failed to fetch posts");
         const data = await res.json();
 
@@ -64,7 +67,10 @@ const DevJournal = () => {
         );
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-[#f0f7f6] via-[#e8f1f0] to-[#e0ebe9] dark:from-[#0f0f0f] dark:via-[#171717] dark:to-[#1a1a1a] text-[#222] dark:text-[#e0e0e0] py-10 px-6 md:px-12 lg:px-24 font-[Inter,sans-serif]">
+    <section
+      id="journal"
+      className="relative overflow-hidden bg-gradient-to-br from-[#f0f7f6] via-[#e8f1f0] to-[#e0ebe9] dark:from-[#0f0f0f] dark:via-[#171717] dark:to-[#1a1a1a] text-[#222] dark:text-[#e0e0e0] py-10 px-6 md:px-12 lg:px-24 font-[Inter,sans-serif]"
+    >
       <div className="text-center mb-7">
         <h1 className="text-2xl md:text-4xl font-bold tracking-tight mb-4 text-black dark:text-white">
           Dev Journal

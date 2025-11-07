@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { FcApproval } from "react-icons/fc";
 import { Moon } from "lucide-react";
+import { scrollToSection } from "@/lib/scrollToSection";
 
 type THeader = {
   title: string;
@@ -24,8 +25,8 @@ export default function Header({ title, tabLinks }: THeader) {
         {tabLinks.map(({ label, path }) => (
           <a
             key={label}
-            className="hover:border-b-2 duration-75 border-black"
-            href={path}
+            className="hover:border-b-2 cursor-pointer duration-75 border-black"
+            onClick={() => scrollToSection(path)}
           >
             {label}
           </a>

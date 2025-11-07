@@ -12,10 +12,10 @@ function App() {
         <Header
           title="Eyob Simachew"
           tabLinks={[
-            { label: "About", path: "#about" },
             { label: "Projects", path: "#projects" },
             { label: "Contact", path: "#contact" },
-            { label: "Experience", path: "#experience" },
+            { label: "Journal", path: "#journal" },
+            { label: "Skills", path: "#skills" },
           ]}
         />
       </div>
