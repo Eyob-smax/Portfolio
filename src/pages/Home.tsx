@@ -14,7 +14,7 @@ export type TConversation = {
   id: string;
 };
 
-const TIMEOUT_DURATION = 1000;
+const TIMEOUT_DURATION = 10000;
 const COOKIE_EXPIRE_MINUTES = 10;
 
 const setCookie = (name: string, value: string, minutes: number) => {
