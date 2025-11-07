@@ -11,7 +11,7 @@ interface ITag {
 interface IPostTag {
   postId: number;
   tagId: number;
-  tag: ITag;
+  Tag: ITag;
 }
 
 interface IPost {
@@ -20,7 +20,7 @@ interface IPost {
   date_string: string;
   date: Date;
   post_link: string;
-  tags: IPostTag[];
+  PostTag: IPostTag[];
 }
 
 const DevJournal = () => {
@@ -49,7 +49,9 @@ const DevJournal = () => {
   const allTags = [
     "All",
     ...Array.from(
-      new Set(posts.flatMap((p) => p.tags?.map((t) => t.tag.tag.trim()) ?? []))
+      new Set(
+        posts.flatMap((p) => p.PostTag?.map((t) => t.Tag.tag.trim()) ?? [])
+      )
     ),
   ];
 
@@ -57,8 +59,8 @@ const DevJournal = () => {
     selectedTag === "All"
       ? posts
       : posts.filter((post) =>
-          post.tags?.some(
-            (t) => t.tag.tag.toLowerCase() === selectedTag.toLowerCase()
+          post.PostTag?.some(
+            (t) => t.Tag.tag.toLowerCase() === selectedTag.toLowerCase()
           )
         );
 
@@ -118,7 +120,7 @@ const DevJournal = () => {
                   }}
                 >
                   <p className="text-sm text-[#5c8a84] mb-2 font-medium">
-                    {post.tags.map((t) => t.tag.tag).join(", ")}
+                    {post?.PostTag?.map((t) => t.Tag.tag).join(", ")}
                   </p>
                   <p className="text-lg font-bold mb-3">
                     {new Date(post.createdAt).toLocaleDateString(undefined, {
