@@ -35,7 +35,6 @@ const DevJournal = () => {
         const res = await fetch("http://localhost:9000/posts?topic=ai&max=3");
         if (!res.ok) throw new Error("Failed to fetch posts");
         const data = await res.json();
-        console.log(data);
 
         setPosts(data);
       } catch (err) {
