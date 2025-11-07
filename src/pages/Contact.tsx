@@ -251,6 +251,8 @@ const ContactPage = () => {
                     <a
                       key={idx}
                       href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="text-[#334d49]/80 hover:text-[#5c8a84] transition-colors"
                     >
                       <Icon className="w-7 h-7" />
