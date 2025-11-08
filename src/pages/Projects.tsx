@@ -78,10 +78,10 @@ export default function Projects() {
       <div className="mt-8 pt-5 w-full max-w-full sm:max-w-[90%] lg:max-w-[80%] mx-auto relative">
         <div
           ref={scrollRef}
-          onMouseEnter={() => setIsPaused(true)}
+          onMouseEnter={() => !isMobile && setIsPaused(true)}
           onTouchStart={() => isMobile && setIsPaused(true)}
           onTouchEnd={() => isMobile && setIsPaused(false)}
-          onMouseLeave={() => setIsPaused(false)}
+          onMouseLeave={() => !isMobile && setIsPaused(false)}
           className="flex gap-5 overflow-x-auto sm:overflow-x-scroll no-scrollbar scroll-smooth px-4 sm:px-0"
           style={{ scrollBehavior: "smooth" }}
         >

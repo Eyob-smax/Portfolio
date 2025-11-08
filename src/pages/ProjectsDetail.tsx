@@ -41,7 +41,7 @@ export default function ProjectsDetail() {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const headerTitle = currentProject
-    ? `Eyob Simachew | ${currentProject.title}`
+    ? `Eyob Simachew | ${currentProject.title.slice(0, 20) + "..."}`
     : "Eyob Simachew | Project Not Found";
 
   useEffect(() => {
@@ -92,7 +92,7 @@ export default function ProjectsDetail() {
 
   return (
     <section className="relative inset-0 min-h-screen bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] bg-[#F6F7F8] flex flex-col w-full px-4 sm:px-2 lg:px-12">
-      <Header title={headerTitle} tabLinks={[]} />
+      <Header type={"project"} title={headerTitle} tabLinks={[]} />
 
       <Link
         to={"/#projects"}
