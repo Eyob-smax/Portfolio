@@ -4,6 +4,7 @@ import SkillCategory from "@/components/SkillCategory";
 import { projects } from "@/lib/data";
 import type { TCategories } from "@/lib/types";
 import { Pause, Play } from "lucide-react";
+import { useIsMobile } from "@/use-mobile";
 
 export default function Projects() {
   const category: TCategories[] = [
@@ -17,7 +18,7 @@ export default function Projects() {
   const [activeTab, setActiveTab] = useState<TCategories>("all");
   const [filteredProjects, setFilteredProjects] = useState(projects);
   const [isPaused, setIsPaused] = useState(false);
-
+  const isMobile = useIsMobile();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const filterProjects = (tab: TCategories) => {
@@ -78,6 +79,8 @@ export default function Projects() {
         <div
           ref={scrollRef}
           onMouseEnter={() => setIsPaused(true)}
+          onTouchStart={() => setIsPaused(true)}
+          onTouchEnd={() => setIsPaused(false)}
           onMouseLeave={() => setIsPaused(false)}
           className="flex gap-5 overflow-x-auto sm:overflow-x-scroll no-scrollbar scroll-smooth px-4 sm:px-0"
           style={{ scrollBehavior: "smooth" }}
