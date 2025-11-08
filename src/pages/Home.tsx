@@ -7,6 +7,7 @@ import { motion } from "motion/react";
 import AISection from "./AiSection";
 import { scrollToSection } from "@/lib/scrollToSection";
 import Notice from "@/components/Notice";
+import { useIsMobile } from "@/use-mobile";
 
 export type TConversation = {
   message: string;
@@ -41,6 +42,7 @@ export default function Home() {
     null
   );
   const [showNotice, setShowNotice] = useState(false);
+  const isMobile = useIsMobile();
 
   const aiSectionRef = useRef<HTMLDivElement>(null);
 
@@ -126,6 +128,8 @@ export default function Home() {
             onClick={() => setShowAISection(true)}
             onMouseOver={() => setMicHover(true)}
             onMouseLeave={() => setMicHover(false)}
+            onTouchStart={() => isMobile && setMicHover(true)}
+            onTouchEnd={() => isMobile && setMicHover(false)}
             className={`bg-[#5c8a84] flex items-center z-50 rounded-full p-3 text-white fixed bottom-5 right-5 cursor-pointer shadow-lg shadow-[#4b7f7a] transition-all duration-300 ${
               !micHover ? "animate-bounce" : "w-auto"
             }`}
