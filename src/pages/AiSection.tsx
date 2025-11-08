@@ -10,33 +10,38 @@ import type { TConversation } from "./Home";
 import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
 
+const STREAM_ENDPOINT = "http://localhost:9000/ai/stream";
+const MAX_INPUT_LENGTH = 200;
+const TIMEOUT_DURATION = 100_000;
+
 const markdownStyles = `
   .markdown-content {
-    line-height: 1.5;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
   .markdown-content p {
-    margin-bottom: 0.75rem;
+    margin-bottom: -0.5rem;
   }
-  .markdown-content strong {
-    font-weight: 700;
-  }
-  .markdown-content em {
-    font-style: italic;
-  }
-  .markdown-content ul, .markdown-content ol {
-    margin: 0.5rem 0;
+  .markdown-content strong { font-weight: 700; }
+  .markdown-content em   { font-style: italic; }
+
+  .markdown-content ul,
+  .markdown-content ol {
     padding-left: 1.5rem;
   }
-  .markdown-content li {
-    margin-bottom: 0.25rem;
+  .markdown-content li { margin-bottom: 0.20rem; }
+
+  /* Links – blue, underlined on hover, open in new tab */
+  .markdown-content a {
+    color: #4b7f7a;
+    text-decoration: underline;
+  }
+  .markdown-content a:hover {
+    text-decoration: underline;
+    opacity: 0.85;
   }
 `;
 
-const STREAM_ENDPOINT = "http://localhost:9000/ai/stream";
-const MAX_INPUT_LENGTH = 200;
-const TIMEOUT_DURATION = 100000;
-
+/* ------------------------------------------------------------------ */
 export default function AISection({
   setShowAiSection,
   convs,
@@ -61,18 +66,15 @@ export default function AISection({
     });
   }, []);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [convs, scrollToBottom]);
+  useEffect(() => scrollToBottom(), [convs, scrollToBottom]);
 
   useEffect(() => {
-    const styleSheet = document.createElement("style");
-    styleSheet.textContent = markdownStyles;
-    document.head.appendChild(styleSheet);
-
+    const style = document.createElement("style");
+    style.textContent = markdownStyles;
+    document.head.appendChild(style);
     return () => {
       eventSourceRef.current?.close();
-      document.head.removeChild(styleSheet);
+      document.head.removeChild(style);
     };
   }, []);
 
@@ -80,76 +82,76 @@ export default function AISection({
     eventSourceRef.current?.close();
     hasReceivedData.current = false;
 
-    const eventSource = new EventSource(
+    const es = new EventSource(
       `${STREAM_ENDPOINT}?topic=${encodeURIComponent(topic)}`
     );
-    eventSourceRef.current = eventSource;
+    eventSourceRef.current = es;
 
     const timeout = setTimeout(() => {
       setConvs((prev) => {
         if (!prev) return [];
-        return prev.map((msg) =>
-          msg.id === aiMessageId
-            ? { ...msg, message: "⚠️ Stream timed out. Check your connection." }
-            : msg
+        return prev.map((m) =>
+          m.id === aiMessageId
+            ? {
+                ...m,
+                message: "Warning: Stream timed out. Check your connection.",
+              }
+            : m
         );
       });
-      eventSource.close();
+      es.close();
       setIsLoading(false);
     }, TIMEOUT_DURATION);
 
-    eventSource.onmessage = (event: MessageEvent) => {
+    es.onmessage = (e: MessageEvent) => {
       try {
-        const chunk = event.data;
+        const chunk = e.data;
         hasReceivedData.current = true;
         setConvs((prev) => {
           if (!prev) return [];
-          return prev.map((msg) =>
-            msg.id === aiMessageId
+          return prev.map((m) =>
+            m.id === aiMessageId
               ? {
-                  ...msg,
-                  message: msg.message.replace("Thinking...", "") + chunk,
+                  ...m,
+                  message: m.message.replace("Thinking...", "") + chunk,
                 }
-              : msg
+              : m
           );
         });
         scrollToBottom();
       } catch (err) {
-        console.error(
-          "Failed to parse SSE data:",
-          err,
-          "Raw data:",
-          event.data
-        );
+        console.error("SSE parse error:", err, "raw:", e.data);
       }
     };
 
-    eventSource.onerror = () => {
+    es.onerror = () => {
       clearTimeout(timeout);
       if (!hasReceivedData.current) {
         setConvs((prev) => {
           if (!prev) return [];
-          return prev.map((msg) =>
-            msg.id === aiMessageId
-              ? { ...msg, message: "⚠️ Stream ended unexpectedly or failed." }
-              : msg
+          return prev.map((m) =>
+            m.id === aiMessageId
+              ? {
+                  ...m,
+                  message: "Warning: Stream failed or ended unexpectedly.",
+                }
+              : m
           );
         });
       }
       setIsLoading(false);
-      eventSource.close();
+      es.close();
     };
 
-    eventSource.addEventListener("end", () => {
+    es.addEventListener("end", () => {
       clearTimeout(timeout);
       setIsLoading(false);
-      eventSource.close();
+      es.close();
     });
   }
 
   async function addConversation(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
     const userMessage = inputValue.trim();
     if (!userMessage) return;
     if (isLoading) return;
@@ -157,7 +159,7 @@ export default function AISection({
       Swal.fire({
         icon: "warning",
         title: "Input Error",
-        text: `Message exceeds maximum length (${MAX_INPUT_LENGTH} characters).`,
+        text: `Message exceeds ${MAX_INPUT_LENGTH} characters.`,
       });
       return;
     }
@@ -168,18 +170,18 @@ export default function AISection({
       return;
     }
 
-    const userMessageId = uuidv4();
-    const aiMessageId = uuidv4();
+    const userId = uuidv4();
+    const aiId = uuidv4();
 
     setConvs((prev) => [
       ...(prev || []),
-      { id: userMessageId, message: userMessage, type: "user" },
-      { id: aiMessageId, message: "Thinking...", type: "ai" },
+      { id: userId, message: userMessage, type: "user" },
+      { id: aiId, message: "Thinking...", type: "ai" },
     ]);
 
     setInputValue("");
     setIsLoading(true);
-    startStream(userMessage, aiMessageId);
+    startStream(userMessage, aiId);
   }
 
   return (
@@ -188,6 +190,7 @@ export default function AISection({
       className="z-40 fixed bottom-4 right-4 h-[70%] w-full max-h-[600px] sm:w-[400px]"
     >
       <div className="relative h-full w-full bg-white shadow-2xl rounded-xl flex flex-col">
+        {/* Header */}
         <div className="border-b flex items-center justify-center w-full py-3 px-4 bg-[#4b7f7a] rounded-t-xl">
           <h1 className="text-white text-center text-lg font-medium">
             AI Assistance
@@ -212,10 +215,6 @@ export default function AISection({
               <h1 className="font-extrabold text-xl mb-2">
                 Ask Me Anything about Eyob!
               </h1>
-              {/* <p className="text-gray-600 text-base">
-                I'm here to help with information about{" "}
-                <span className="text-indigo-700 font-semibold">Eyob</span>.
-              </p> */}
             </div>
           ) : (
             convs.map(({ id, message, type }) => (
@@ -229,13 +228,26 @@ export default function AISection({
                 <Badge
                   className={`py-2 px-3 whitespace-pre-wrap max-w-[80%] text-left shadow-md ${
                     type === "user"
-                      ? "bg-purple-600 text-white rounded-br-none"
+                      ? "bg-[#4b7f7a] text-white rounded-br-none"
                       : "bg-white text-gray-800 rounded-tl-none border border-gray-200"
                   }`}
                 >
                   {type === "ai" ? (
                     <div className="markdown-content">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          a: ({ node, ...props }) => (
+                            <a
+                              {...props}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title={`link-${node}`}
+                              className="text-[#4b7f7a] hover:underline"
+                            />
+                          ),
+                        }}
+                      >
                         {message}
                       </ReactMarkdown>
                     </div>
@@ -257,7 +269,7 @@ export default function AISection({
               placeholder={
                 isLoading
                   ? "Waiting for AI..."
-                  : convs && convs?.length > 0
+                  : convs && convs.length > 0
                   ? "type `clear` to start fresh or ask another question!"
                   : "Ask me about Eyob..."
               }
@@ -291,12 +303,12 @@ export default function AISection({
                     r="10"
                     stroke="currentColor"
                     strokeWidth="4"
-                  ></circle>
+                  />
                   <path
                     className="opacity-75"
                     fill="currentColor"
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
+                  />
                 </svg>
               ) : (
                 <Send className="w-5 h-5" />

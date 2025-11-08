@@ -128,7 +128,7 @@ export default function ProjectsDetail() {
                   {images.map((img, i) => (
                     <img
                       key={i}
-                      src={img.url} // Accessing the URL property from the image object
+                      src={img.url}
                       alt={`${currentProject.title} screenshot ${i + 1}`}
                       className={`object-cover hover:scale-105 duration-300 w-full h-[280px] flex-shrink-0 object-${
                         img.imagePos || "center"
@@ -136,7 +136,7 @@ export default function ProjectsDetail() {
                     />
                   ))}
                 </div>
-                {/* Navigation Buttons (only show if more than one image) */}
+
                 {images.length > 1 && (
                   <>
                     <button
