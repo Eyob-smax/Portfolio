@@ -3,10 +3,14 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
         "stitch-dark": "#001a33",
+        primary: "#5c8a84",
+        "background-light": "#f6f6f8",
+        "background-dark": "#101622",
       },
 
       backgroundImage: {
