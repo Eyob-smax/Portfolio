@@ -28,7 +28,7 @@ export default function Notice({
 
   return (
     <div
-      className={`fixed top-5 right-5 max-w-sm w-full z-50 transform transition-all duration-300
+      className={`fixed top-5 right-5 left-3 sm:left-auto max-w-sm w-full z-50 transform transition-all duration-300
         ${visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-5"}
       `}
     >
