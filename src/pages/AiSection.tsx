@@ -10,7 +10,8 @@ import type { TConversation } from "./Home";
 import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
 
-const STREAM_ENDPOINT = "http://localhost:3000/ai/stream";
+const STREAM_ENDPOINT =
+  "https://portfolio-backend-two-mocha.vercel.app/ai/stream";
 const MAX_INPUT_LENGTH = 200;
 const TIMEOUT_DURATION = 100_000;
 
@@ -41,7 +42,6 @@ const markdownStyles = `
   }
 `;
 
-/* ------------------------------------------------------------------ */
 export default function AISection({
   setShowAiSection,
   convs,
