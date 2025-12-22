@@ -52,7 +52,7 @@ const DevJournal = () => {
     "All",
     ...Array.from(
       new Set(
-        posts.flatMap((p) => p.PostTag?.map((t) => t.Tag.tag.trim()) ?? [])
+        posts?.flatMap((p) => p.PostTag?.map((t) => t.Tag.tag.trim()) ?? [])
       )
     ),
   ];
