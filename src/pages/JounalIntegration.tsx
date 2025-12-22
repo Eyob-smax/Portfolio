@@ -23,8 +23,8 @@ interface IPost {
   PostTag: IPostTag[];
 }
 
-export const BASE_URL = "http://localhost:9000";
-const MAX_POSTS = 6;
+export const BASE_URL = "https://portfolio-backend-two-mocha.vercel.app";
+const MAX_POSTS = 9;
 
 const DevJournal = () => {
   const [selectedTag, setSelectedTag] = useState<string>("All");
@@ -69,7 +69,7 @@ const DevJournal = () => {
   return (
     <section
       id="journal"
-      className="relative overflow-hidden bg-gradient-to-br from-[#f0f7f6] via-[#e8f1f0] to-[#e0ebe9] dark:from-[#0f0f0f] dark:via-[#171717] dark:to-[#1a1a1a] text-[#222] dark:text-[#e0e0e0] py-10 px-6 md:px-12 lg:px-24 font-[Inter,sans-serif]"
+      className="relative overflow-hidden bg-linear-to-br from-[#f0f7f6] via-[#e8f1f0] to-[#e0ebe9] dark:from-[#0f0f0f] dark:via-[#171717] dark:to-[#1a1a1a] text-[#222] dark:text-[#e0e0e0] py-10 px-6 md:px-12 lg:px-24 font-[Inter,sans-serif]"
     >
       <div className="text-center mb-7">
         <h1 className="text-2xl md:text-4xl font-bold tracking-tight mb-4 text-black dark:text-white">
