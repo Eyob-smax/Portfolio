@@ -187,7 +187,7 @@ export default function AISection({
   return (
     <div
       ref={ref}
-      className="z-40 fixed bottom-4 mx-auto left-[4%] sm:left-auto right-4 h-[70%] max-h-[500px] sm:w-[400px]"
+      className="z-40 fixed bottom-4 mx-auto left-[4%] sm:left-auto right-4 h-[70%] max-h-125 sm:w-100"
     >
       <div className="relative h-full w-full bg-white shadow-2xl rounded-xl flex flex-col">
         {/* Header */}
@@ -205,7 +205,7 @@ export default function AISection({
         </div>
 
         <div
-          className="flex-grow w-full overflow-y-auto p-4 space-y-3 bg-[#ecedee]"
+          className="grow w-full overflow-y-auto p-4 space-y-3 bg-[#ecedee]"
           ref={messagesEndRef}
           role="log"
           aria-live="polite"
@@ -273,7 +273,7 @@ export default function AISection({
                   ? "type `clear` to start fresh or ask another question!"
                   : "Ask me about Eyob..."
               }
-              className="flex-grow border-gray-300 focus:border-[#4b7f7a]"
+              className="grow border-gray-300 focus:border-[#4b7f7a]"
               name="message"
               value={inputValue}
               onChange={(e) =>
