@@ -38,8 +38,7 @@ const DevJournal = () => {
         const res = await fetch(`${BASE_URL}/posts?max=${MAX_POSTS}`);
         if (!res.ok) throw new Error("Failed to fetch posts");
         const data = await res.json();
-
-        setPosts(data);
+        setPosts(data ?? []);
       } catch (err) {
         setError((err as Error).message);
       } finally {
@@ -60,7 +59,7 @@ const DevJournal = () => {
   const filteredPosts =
     selectedTag === "All"
       ? posts
-      : posts.filter((post) =>
+      : posts?.filter((post) =>
           post.PostTag?.some(
             (t) => t.Tag.tag.toLowerCase() === selectedTag.toLowerCase()
           )
