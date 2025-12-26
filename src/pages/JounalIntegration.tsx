@@ -38,7 +38,10 @@ const DevJournal = () => {
         const res = await fetch(`${BASE_URL}/posts?max=${MAX_POSTS}`);
         if (!res.ok) throw new Error("Failed to fetch posts");
         const data = await res.json();
-        setPosts(data ?? []);
+        if (data.length === 0) throw new Error("No posts available");
+        if (!Array.isArray(data))
+          throw new Error("Invalid data format received");
+        setPosts(data);
       } catch (err) {
         setError((err as Error).message);
       } finally {
@@ -81,7 +84,7 @@ const DevJournal = () => {
       </div>
 
       <div className="flex flex-wrap justify-center gap-3 mb-5">
-        {allTags.map((tag) => (
+        {allTags?.map((tag) => (
           <button
             key={tag}
             onClick={() => setSelectedTag(tag)}
@@ -107,8 +110,8 @@ const DevJournal = () => {
 
       {!loading && !error && (
         <div className="grid max-h-[75vh] py-5 overflow-y-scroll grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredPosts.length > 0 ? (
-            filteredPosts.map((post, index) => {
+          {filteredPosts?.length > 0 ? (
+            filteredPosts?.map((post, index) => {
               const truncatedPost =
                 post.post.length > 200
                   ? post.post.slice(0, 200) + "..."
