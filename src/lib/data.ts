@@ -78,7 +78,7 @@ With a responsive design, dynamic API integration, and smooth dashboard interact
       { url: HasabSdk_Code, imagePos: "top" },
       { url: HasabSdk_Downloads, imagePos: "top" },
     ],
-    class: ["library", "sdk", "typescript"],
+    class: ["library/tools", "sdk", "typescript"],
     tags: [
       "TypeScript",
       "Node.js",
@@ -204,7 +204,7 @@ As a PWA, it supports offline functionality for core features and can be install
       { url: CodStat_Downloads, imagePos: "top" },
       { url: CodStat, imagePos: "top" },
     ],
-    class: ["cli", "tool", "node"],
+    class: ["library/tools", "tool", "node"],
     tags: [
       "Node.js",
       "TypeScript",

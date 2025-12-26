@@ -13,6 +13,7 @@ export default function Projects() {
     "backend",
     "full-stack",
     "telegram-bot",
+    "library/tools",
   ];
 
   const [activeTab, setActiveTab] = useState<TCategories>("all");
