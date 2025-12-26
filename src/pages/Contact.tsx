@@ -33,7 +33,7 @@ const InputField = ({
       {required ? <span className="text-[#5c8a84]">*</span> : null}
     </p>
     <input
-      className="w-full text-sm h-10 rounded-lg border border-[#d5dddc] bg-[#f0f7f6] p-[15px] text-[#334d49] placeholder:text-[#334d49]/60 focus:outline-none focus:ring-2 focus:ring-[#5c8a84]/50 transition-all"
+      className="w-full text-sm h-10 rounded-lg border border-[#d5dddc] bg-[#f0f7f6] p-3.75 text-[#334d49] placeholder:text-[#334d49]/60 focus:outline-none focus:ring-2 focus:ring-[#5c8a84]/50 transition-all"
       name={name}
       type={type}
       value={value}
@@ -65,7 +65,7 @@ const TextareaField = ({
       {required && <span className="text-[#5c8a84]">*</span>}
     </p>
     <textarea
-      className="w-full min-h-32 rounded-lg border border-[#d5dddc] bg-[#f0f7f6] p-[15px] text-sm text-[#334d49] placeholder:text-[#334d49]/60 focus:outline-none focus:ring-2 focus:ring-[#5c8a84]/50 transition-all resize-none"
+      className="w-full min-h-32 rounded-lg border border-[#d5dddc] bg-[#f0f7f6] p-3.75 text-sm text-[#334d49] placeholder:text-[#334d49]/60 focus:outline-none focus:ring-2 focus:ring-[#5c8a84]/50 transition-all resize-none"
       name={name}
       value={value}
       onChange={onChange}
@@ -94,7 +94,14 @@ const ContactPage = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.email || !formData.message) {
+    const payload = {
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      subject: formData.subject?.trim() || "Portfolio Contact Message",
+      message: formData.message.trim(),
+    };
+
+    if (!payload.name || !payload.email || !payload.message) {
       Swal.fire({
         icon: "error",
         title: "Validation Error",
@@ -103,36 +110,52 @@ const ContactPage = () => {
       return;
     }
 
+    const controller = new AbortController();
     setLoading(true);
+
     try {
-      const response = await fetch(`${BASE_URL}/message`, {
+      const response = await fetch(`${BASE_URL}/messages`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData?.message || "Failed to send message.");
+        throw new Error(data?.message || "Failed to send message.");
       }
 
       Swal.fire({
         icon: "success",
         title: "Message Sent!",
         text: "Your message has been sent successfully.",
-        timer: 500,
+        timer: 1200,
+        showConfirmButton: false,
       });
 
-      setFormData({ name: "", email: "", subject: "", message: "" });
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: (error as Error).message || "Something went wrong.",
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
       });
+    } catch (error) {
+      if ((error as Error).name !== "AbortError") {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: (error as Error).message || "Something went wrong.",
+        });
+      }
     } finally {
       setLoading(false);
     }
+
+    return () => controller.abort();
   };
 
   return (
@@ -141,7 +164,7 @@ const ContactPage = () => {
       className="min-h-screen w-full bg-[#f0f7f6] font-display text-[#334d49] flex flex-col"
     >
       <main className="flex-1 flex justify-center px-6 sm:px-10 md:px-20 lg:px-40 py-10">
-        <div className="w-full max-w-[960px] bg-white p-6 sm:p-8 rounded-lg shadow-md">
+        <div className="w-full max-w-240 bg-white p-6 sm:p-8 rounded-lg shadow-md">
           <div className="text-center mb-10">
             <h1 className="text-3xl sm:text-4xl font-bold mb-2">
               Connect with Eyob Simachew
