@@ -88,8 +88,8 @@ With a responsive design, dynamic API integration, and smooth dashboard interact
       "AI Integration",
       "Hasab AI",
     ],
-    source: "https://www.npmjs.com/package/hasab-sdk",
-    visit: "https://github.com/Eyob-smax/hasab_sdk",
+    visit: "https://www.npmjs.com/package/hasab-sdk",
+    source: "https://github.com/Eyob-smax/hasab_sdk",
     detailedDescription: `HasabClient SDK
 HasabClient SDK is a modern, type-safe TypeScript library designed to make integration with the Hasab AI API simple and reliable. It provides a clean interface for four core AI capabilities: chat completions, audio transcription, text translation, and high-quality text-to-speech synthesis — with special strength in supporting local languages such as Amharic.
 
@@ -214,8 +214,8 @@ As a PWA, it supports offline functionality for core features and can be install
       "Code Analysis",
       "Code Metrics",
     ],
-    source: "https://www.npmjs.com/package/cod-stat",
-    visit: "https://github.com/Eyob-smax/cod-stat", // Update if you add npm package or demo
+    visit: "https://www.npmjs.com/package/cod-stat",
+    source: "https://github.com/Eyob-smax/cod-stat",
     detailedDescription: `Cod Stat
 Cod Stat is a fast, colorful, and highly configurable command-line tool built with Node.js to help developers gain deep insights into their codebase. It scans directories recursively, analyzes files across multiple programming languages, and delivers clear metrics on code quality, structure, and complexity.
 
