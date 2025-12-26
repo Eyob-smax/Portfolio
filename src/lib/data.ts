@@ -32,6 +32,12 @@ import VTT_trans2 from "@/assets/projects/VoiceToText/transcribed2.png";
 import YT_down1 from "@/assets/projects/youtubeVideoDowloader/downloader1.png";
 import YT_down2 from "@/assets/projects/youtubeVideoDowloader/downloader2.png";
 import YT_down3 from "@/assets/projects/youtubeVideoDowloader/downloader3.png";
+import HasabSdk from "@/assets/projects/hasab-sdk/main.png";
+import HasabSdk_Code from "@/assets/projects/hasab-sdk/code.png";
+import HasabSdk_Downloads from "@/assets/projects/hasab-sdk/downloads.png";
+import CodStat from "@/assets/projects/cod-stat/main.png";
+import CodStat_Code from "@/assets/projects/cod-stat/code.png";
+import CodStat_Downloads from "@/assets/projects/cod-stat/condstat-downlods.png";
 import type { IProjects } from "@/lib/types";
 
 export const projects: IProjects[] = [
@@ -63,7 +69,46 @@ Designed with a focus on performance, reliability, and automation, the system su
 
 With a responsive design, dynamic API integration, and smooth dashboard interaction, this project demonstrates my expertise in React.js, Next.js, Tailwind CSS, Node.js, and MongoDB, blending both frontend and backend development to deliver a complete and production-ready solution.`,
   },
+  {
+    title: "HasabClient SDK",
+    description:
+      "A TypeScript SDK for the Hasab AI API, enabling easy integration of chat, transcription, translation, and text-to-speech features — especially powerful for local languages like Amharic. Built to simplify interaction with Hasab AI's high-quality voice and text models.",
+    image: [
+      { url: HasabSdk, imagePos: "top" },
+      { url: HasabSdk_Code, imagePos: "top" },
+      { url: HasabSdk_Downloads, imagePos: "top" },
+    ],
+    class: ["library", "sdk", "typescript"],
+    tags: [
+      "TypeScript",
+      "Node.js",
+      "API Client",
+      "Streaming",
+      "Axios",
+      "AI Integration",
+      "Hasab AI",
+      "Local Languages",
+    ],
+    source: "https://github.com/Eyob-smax/hasab_sdk",
+    visit: "https://github.com/Eyob-smax/hasab_sdk", // or link to docs if you publish them
+    detailedDescription: `HasabClient SDK
+HasabClient SDK is a modern, type-safe TypeScript library designed to make integration with the Hasab AI API simple and reliable. It provides a clean interface for four core AI capabilities: chat completions, audio transcription, text translation, and high-quality text-to-speech synthesis — with special strength in supporting local languages such as Amharic.
 
+Motivated by the impressive voice and text quality of Hasab AI for under-resourced languages, I created this SDK to remove the friction of working directly with raw API calls. Developers can now quickly add AI-powered chat, voice input/output, and translation features to their Node.js applications.
+
+Key features include:
+• Synchronous and streaming chat responses
+• Audio file transcription with history
+• Text translation with language detection
+• TTS synthesis (base64 & streaming) with speaker selection
+• History, analytics, and record management for TTS
+• Robust error handling with custom error classes
+• Support for file uploads via Buffer, path, or Blob
+
+The library is built with developer experience in mind: clear TypeScript types, consistent response shapes, and easy streaming integration using Node.js streams. It serves as a community tool to help more developers leverage Hasab AI’s capabilities in real-world applications.
+
+This project demonstrates my skills in API client design, TypeScript, streaming data handling, file uploads, and creating developer-friendly libraries.`,
+  },
   {
     title: "Expense Tracker",
     description:
@@ -147,6 +192,50 @@ The application leverages the Gemini API, fine-tuned through Google AI Studio, t
 On the technical side, DevElevate is developed using TypeScript, Vanilla JavaScript, HTML, and Tailwind CSS for a clean, responsive UI, while Node.js, Express, and MongoDB power the backend. The app also implements secure authentication with Passport.js and Cookie-Session, ensuring smooth login and data protection.
 
 As a PWA, it supports offline functionality for core features and can be installed directly on mobile devices—allowing developers to stay productive anywhere. The project reflects strong skills in AI integration, full-stack JavaScript development, and UI/UX optimization, demonstrating how technology and usability can merge to create a seamless developer experience.`,
+  },
+
+  {
+    title: "Cod Stat",
+    description:
+      "A powerful and configurable Node.js command-line tool for analyzing source code statistics. It provides insights into line counts, code density, function complexity, largest files, and more — supporting multiple languages and ideal for personal projects or CI/CD integration.",
+    image: [
+      // Replace with your actual screenshots (e.g., terminal outputs, tables, progress bar)
+      { url: CodStat_Code, imagePos: "top" },
+      { url: CodStat_Downloads, imagePos: "top" },
+      { url: CodStat, imagePos: "top" },
+    ],
+    class: ["cli", "tool", "node"],
+    tags: [
+      "Node.js",
+      "TypeScript",
+      "CLI",
+      "Commander.js",
+      "Chalk",
+      "Progress Bar",
+      "Code Analysis",
+      "Code Metrics",
+    ],
+    source: "https://github.com/Eyob-smax/cod-stat",
+    visit: "https://github.com/Eyob-smax/cod-stat", // Update if you add npm package or demo
+    detailedDescription: `Cod Stat
+Cod Stat is a fast, colorful, and highly configurable command-line tool built with Node.js to help developers gain deep insights into their codebase. It scans directories recursively, analyzes files across multiple programming languages, and delivers clear metrics on code quality, structure, and complexity.
+
+Perfect for solo developers reviewing personal projects, teams enforcing code standards, or integrating into CI/CD pipelines to track codebase health over time.
+
+Key features include:
+• Detailed line counting (total, code, blanks, comments) with code density calculation
+• Function/method counting and average length analysis
+• Rough complexity estimation based on control-flow keywords
+• Support for 15+ programming languages and common config/markup files
+• Filters for code-only or config-only scans
+• Top N largest files identification
+• Interactive progress bar for large repositories
+• Pretty colored table output or JSON export for automation
+• Custom ignore directories and language filtering
+
+The tool uses modern Node.js libraries like Commander for argument parsing, Chalk for vibrant terminal colors, and Cli-table for beautiful outputs — delivering a polished and intuitive user experience right in the terminal.
+
+This project showcases my expertise in building developer tools, CLI design, file system traversal, language-aware parsing, and creating reusable, production-ready Node.js packages.`,
   },
 
   {
