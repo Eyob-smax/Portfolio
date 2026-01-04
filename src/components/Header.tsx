@@ -109,9 +109,14 @@ export default function Header({
 
             {githubStats && (
               <div className="flex items-center gap-4 text-xs sm:text-sm font-medium">
-                <span className="hover:text-[#5c8a84] cursor-pointer ">
+                <a
+                  href={`https://github.com/${githubUsername}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[#5c8a84] cursor-pointer "
+                >
                   @{githubStats.username}
-                </span>
+                </a>
                 <div className="hidden sm:flex items-center gap-3">
                   <span>{githubStats.publicRepos} repos</span>
                   <span>•</span>
