@@ -287,8 +287,8 @@ From searching and streaming podcasts to downloading and listening offline, Spac
       "TailwindCSS",
       "GitHub Actions",
     ],
-    source: "https://github.com/your-org/eldcp",
-    visit: "https://eldcp.yourdomain.com",
+    source: "NDA - Private Repository",
+    visit: "NDA - Private Deployment",
     detailedDescription: `ELDCP (Ethiopian Language Data Collection Platform) is a full-scale data collection and validation system built to support the development of Ethiopian-language-focused AI models. Developed by a team of five, the platform is designed for universities and research institutions that require high-quality, verified voice datasets.
 
 The platform supports structured project management (e.g., Amharic datasets), where contributors receive unique links containing prompts and submit voice recordings directly through the system. Each submission passes through a two-stage validation pipeline: automatic audio validation to ensure clarity and quality, followed by a human-based review process.

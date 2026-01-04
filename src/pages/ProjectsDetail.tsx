@@ -8,6 +8,7 @@ import {
   ChevronLeft,
   ChevronRight,
   AlertTriangle,
+  EyeClosed,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link, useParams } from "react-router-dom";
@@ -155,7 +156,7 @@ export default function ProjectsDetail() {
                 )}
               </>
             ) : (
-              <div className="w-full h-[280px] flex items-center justify-center bg-gray-100 text-gray-500">
+              <div className="w-full h-70 flex items-center justify-center bg-gray-100 text-gray-500">
                 No images available for this project.
               </div>
             )}
@@ -164,7 +165,7 @@ export default function ProjectsDetail() {
 
         <div className="flex-1 flex flex-col gap-4 w-full lg:w-1/2">
           <h2 className="text-xl font-bold mt-2">Technical Details</h2>
-          <p className="text-sm mt-2 max-h-[225px] overflow-y-auto text-gray-500">
+          <p className="text-sm mt-2 max-h-56.25 overflow-y-auto text-gray-500">
             {currentProject.detailedDescription}
           </p>
 
@@ -183,28 +184,44 @@ export default function ProjectsDetail() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 mt-5">
-            {currentProject.visit && (
-              <a
-                href={currentProject.visit}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button className="bg-[#13A4EC] hover:bg-blue-500 cursor-pointer shadow-lg shadow-blue-200 text-white font-semibold flex items-center justify-center gap-2 w-full sm:w-auto">
-                  <Eye /> Live demo
+            {currentProject.visit &&
+              (currentProject.visit.startsWith("DNA") ? (
+                <Button
+                  className="bg-gray-400 cursor-not-allowed shadow-lg shadow-gray-200 text-white font-semibold flex items-center justify-center gap-2 w-full sm:w-auto"
+                  disabled
+                >
+                  <EyeClosed /> DNA - Private Deployment
                 </Button>
-              </a>
-            )}
-            {currentProject.source && (
-              <a
-                href={currentProject.source}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button className="bg-[#E8EBEE] hover:bg-[#E8EBEE] cursor-pointer shadow-lg shadow-slate-900/15 text-black font-semibold flex items-center justify-center gap-2 w-full sm:w-auto">
-                  <Code /> Source Code
+              ) : (
+                <a
+                  href={currentProject.visit}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button className="bg-[#13A4EC] hover:bg-blue-500 cursor-pointer shadow-lg shadow-blue-200 text-white font-semibold flex items-center justify-center gap-2 w-full sm:w-auto">
+                    <Eye /> Live demo
+                  </Button>
+                </a>
+              ))}
+            {currentProject.source &&
+              (currentProject.source.startsWith("NDA") ? (
+                <Button
+                  className="bg-gray-400 cursor-not-allowed shadow-lg shadow-gray-200 text-black font-semibold flex items-center justify-center gap-2 w-full sm:w-auto"
+                  disabled
+                >
+                  <EyeClosed /> DNA - Private Repository
                 </Button>
-              </a>
-            )}
+              ) : (
+                <a
+                  href={currentProject.source}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button className="bg-[#E8EBEE] hover:bg-[#E8EBEE] cursor-pointer shadow-lg shadow-slate-900/15 text-black font-semibold flex items-center justify-center gap-2 w-full sm:w-auto">
+                    <Code /> Source Code
+                  </Button>
+                </a>
+              ))}
           </div>
         </div>
       </div>
