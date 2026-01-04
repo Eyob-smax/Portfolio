@@ -407,6 +407,11 @@ import {
   SiFigma,
   SiPrettier,
   SiSupabase,
+  SiNextdotjs,
+  SiBun,
+  SiHono,
+  SiPrisma,
+  SiKubernetes,
 } from "react-icons/si";
 
 import { DiNodejsSmall, DiChrome, DiReact } from "react-icons/di";
@@ -418,7 +423,8 @@ export const tech_stack = [
     skills: [
       { name: "JavaScript", icon: SiJavascript, proficiency: "Proficient" },
       { name: "TypeScript", icon: SiTypescript, proficiency: "Proficient" },
-      { name: "React", icon: DiReact, proficiency: "Intermediate" },
+      { name: "React", icon: DiReact, proficiency: "Proficient" },
+      { name: "Next.js", icon: SiNextdotjs, proficiency: "Intermediate" },
       { name: "Tailwind CSS", icon: SiTailwindcss, proficiency: "Proficient" },
       { name: "Redux", icon: SiRedux, proficiency: "Intermediate" },
     ],
@@ -427,13 +433,16 @@ export const tech_stack = [
     category: "Backend",
     skills: [
       { name: "Node.js", icon: DiNodejsSmall, proficiency: "Proficient" },
+      { name: "Bun", icon: SiBun, proficiency: "Intermediate" },
       { name: "Express.js", icon: SiExpress, proficiency: "Proficient" },
-      { name: "NestJS", icon: SiNestjs, proficiency: "Intermediate" },
+      { name: "Hono.js", icon: SiHono, proficiency: "Intermediate" },
+      { name: "NestJS", icon: SiNestjs, proficiency: "Proficient" },
       { name: "Supabase", icon: SiSupabase, proficiency: "Proficient" },
-      { name: "PostgreSQL", icon: SiPostgresql, proficiency: "Intermediate" },
-      { name: "MongoDB", icon: SiMongodb, proficiency: "Intermediate" },
+      { name: "PostgreSQL", icon: SiPostgresql, proficiency: "Proficient" },
+      { name: "MongoDB", icon: SiMongodb, proficiency: "Proficient" },
       { name: "Redis", icon: SiRedis, proficiency: "Proficient" },
       { name: "GraphQL", icon: SiGraphql, proficiency: "Intermediate" },
+      { name: "Prisma", icon: SiPrisma, proficiency: "Proficient" },
       {
         name: "Socket.IO",
         icon: Zap,
@@ -444,12 +453,13 @@ export const tech_stack = [
   {
     category: "DevOps / Deployment",
     skills: [
-      { name: "Docker", icon: SiDocker, proficiency: "Intermediate" },
+      { name: "Docker", icon: SiDocker, proficiency: "Proficient" },
+      { name: "Kubernetes", icon: SiKubernetes, proficiency: "Intermediate" },
       { name: "Vercel", icon: SiVercel, proficiency: "Proficient" },
       {
         name: "GitHub Actions",
         icon: SiGithubactions,
-        proficiency: "Learning",
+        proficiency: "Intermediate",
       },
     ],
   },
