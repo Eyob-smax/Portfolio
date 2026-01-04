@@ -93,7 +93,13 @@ export default function Header({
       {type !== "project" && (
         <div className="flex flex-1 sm:flex-none justify-end items-center mt-2 sm:mt-0">
           <div className="flex items-center gap-3 bg-[#EBEFF3] rounded-full px-4 py-2">
-            <DiGithubBadge className="text-2xl text-gray-800" />
+            <a
+              href={`https://github.com/${githubUsername}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <DiGithubBadge className="text-2xl text-gray-800" />
+            </a>
 
             {loading && (
               <span className="text-xs text-gray-600">Loading...</span>
