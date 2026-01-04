@@ -92,7 +92,7 @@ export default function Header({
 
       {type !== "project" && (
         <div className="flex flex-1 sm:flex-none justify-end items-center mt-2 sm:mt-0">
-          <div className="flex items-center gap-3 bg-[#EBEFF3] rounded-full px-4 py-2">
+          <div className="flex hover:border hover:border-gray-400  items-center gap-3 bg-[#EBEFF3] rounded-full px-4 py-2">
             <a
               href={`https://github.com/${githubUsername}`}
               target="_blank"
@@ -108,7 +108,7 @@ export default function Header({
             {error && <span className="text-xs text-red-600">GitHub</span>}
 
             {githubStats && (
-              <div className="flex items-center gap-4 text-xs sm:text-sm font-medium text-gray-700 hover:border hover:border-gray-400 px-2 py-1 rounded-md">
+              <div className="flex items-center gap-4 text-xs sm:text-sm font-medium">
                 <span className="hover:text-[#5c8a84] cursor-pointer ">
                   @{githubStats.username}
                 </span>
