@@ -38,6 +38,11 @@ import HasabSdk_Downloads from "@/assets/projects/hasab-sdk/downloads.png";
 import CodStat from "@/assets/projects/cod-stat/main.png";
 import CodStat_Code from "@/assets/projects/cod-stat/code.png";
 import CodStat_Downloads from "@/assets/projects/cod-stat/condstat-downlods.png";
+
+import ELDCP_dashboard from "@/assets/projects/eldcp/dashboard.png";
+import ELDCP_Home from "@/assets/projects/eldcp/home.png";
+import ELDCP_contributor from "@/assets/projects/eldcp/submissions.png";
+import ELDCP_Profile from "@/assets/projects/eldcp/profile.png";
 import type { IProjects } from "@/lib/types";
 
 export const projects: IProjects[] = [
@@ -259,6 +264,40 @@ The app is built using Vanilla JavaScript, Node.js, and Express, showcasing effi
 With its responsive and user-friendly design, SpaceCast delivers a native app-like experience on any device. It also employs crypto libraries to enhance data security and speed, while its PWA capabilities make it installable on both desktop and mobile platforms.
 
 From searching and streaming podcasts to downloading and listening offline, SpaceCast demonstrates a deep understanding of modern web development, UX design, and performance optimization, all wrapped in a clean, immersive interface.`,
+  },
+  {
+    title: "ELDCP – Ethiopian Language Data Collection Platform",
+    description:
+      "ELDCP is a university-focused platform designed to collect, validate, and manage high-quality Ethiopian language voice datasets for training AI models. It streamlines contributor submissions, multi-phase validations, and automated payments in a scalable and secure system.",
+    image: [
+      { url: ELDCP_dashboard, imagePos: "top" },
+      { url: ELDCP_Home, imagePos: "top" },
+      { url: ELDCP_contributor, imagePos: "top" },
+      { url: ELDCP_Profile, imagePos: "top" },
+    ],
+    class: ["web-platform", "ai-data-collection"],
+    tags: [
+      "Next.js",
+      "Node.js",
+      "Prisma",
+      "PostgreSQL",
+      "JWT",
+      "Docker",
+      "Nginx",
+      "TailwindCSS",
+      "GitHub Actions",
+    ],
+    source: "https://github.com/your-org/eldcp",
+    visit: "https://eldcp.yourdomain.com",
+    detailedDescription: `ELDCP (Ethiopian Language Data Collection Platform) is a full-scale data collection and validation system built to support the development of Ethiopian-language-focused AI models. Developed by a team of five, the platform is designed for universities and research institutions that require high-quality, verified voice datasets.
+
+The platform supports structured project management (e.g., Amharic datasets), where contributors receive unique links containing prompts and submit voice recordings directly through the system. Each submission passes through a two-stage validation pipeline: automatic audio validation to ensure clarity and quality, followed by a human-based review process.
+
+Human validation is handled by multiple validators. If two validators disagree, the submission is automatically escalated to a tie-breaker to ensure fairness and data accuracy. Once validated, the system generates invoices for both contributors and validators and allows administrators to export structured datasets (audio files, prompts, and metadata) for AI model training.
+
+ELDCP features role-based access control with four distinct roles: Super Admin, Project Manager, Contributor, and Validator. The application exposes over 65 RESTful endpoints and is built using Next.js, Prisma, and PostgreSQL, secured with JWT authentication.
+
+The platform is fully containerized with Docker, optimized behind Nginx, and integrated with GitHub Actions for CI/CD. It demonstrates strong backend architecture, scalable workflow design, and real-world problem solving in AI data engineering and system automation.`,
   },
   {
     title: "Simple E-commerce Site",
