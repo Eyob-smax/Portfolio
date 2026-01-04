@@ -119,7 +119,6 @@ export default function ProjectsDetail() {
                 }
               : {})}
           >
-            {/* Image Slider */}
             {images.length > 0 ? (
               <>
                 <div
@@ -131,7 +130,7 @@ export default function ProjectsDetail() {
                       key={i}
                       src={img.url}
                       alt={`${currentProject.title} screenshot ${i + 1}`}
-                      className={`object-cover hover:scale-105 duration-300 w-full h-[280px] flex-shrink-0 object-${
+                      className={`object-cover hover:scale-105 duration-300 w-full h-70 shrink-0 object-${
                         img.imagePos || "center"
                       }`}
                     />

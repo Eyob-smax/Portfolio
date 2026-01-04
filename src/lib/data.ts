@@ -39,10 +39,10 @@ import CodStat from "@/assets/projects/cod-stat/main.png";
 import CodStat_Code from "@/assets/projects/cod-stat/code.png";
 import CodStat_Downloads from "@/assets/projects/cod-stat/condstat-downlods.png";
 
-import ELDCP_dashboard from "@/assets/projects/eldcp/dashboard.png";
-import ELDCP_Home from "@/assets/projects/eldcp/home.png";
-import ELDCP_contributor from "@/assets/projects/eldcp/submissions.png";
-import ELDCP_Profile from "@/assets/projects/eldcp/profile.png";
+import ELDCP_dashboard from "@/assets/projects/ELDCP/dashboard.png";
+import ELDCP_Home from "@/assets/projects/ELDCP/home.png";
+import ELDCP_contributor from "@/assets/projects/ELDCP/submissions.png";
+import ELDCP_Profile from "@/assets/projects/ELDCP/profile.png";
 import type { IProjects } from "@/lib/types";
 
 export const projects: IProjects[] = [
