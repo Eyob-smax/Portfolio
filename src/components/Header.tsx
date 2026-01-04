@@ -108,8 +108,10 @@ export default function Header({
             {error && <span className="text-xs text-red-600">GitHub</span>}
 
             {githubStats && (
-              <div className="flex items-center gap-4 text-xs sm:text-sm font-medium text-gray-700">
-                <span>@{githubStats.username}</span>
+              <div className="flex items-center gap-4 text-xs sm:text-sm font-medium text-gray-700 hover:border hover:border-gray-400 px-2 py-1 rounded-md">
+                <span className="hover:text-[#5c8a84] cursor-pointer ">
+                  @{githubStats.username}
+                </span>
                 <div className="hidden sm:flex items-center gap-3">
                   <span>{githubStats.publicRepos} repos</span>
                   <span>•</span>
