@@ -41,9 +41,9 @@ const markdownStyles = `
     opacity: 0.85;
   }
 
-.markdown-content h1 { font-size: 1.5rem; font-weight: 800; margin-top: 1.5rem; }
-.markdown-content h2 { font-size: 1.3rem; font-weight: 700; }
-.markdown-content h3 { font-size: 1.1rem; font-weight: 700; color: #2d5a56; }
+.markdown-content h1 { -weight: 800; margin-top: 1.5rem; }
+.markdown-content h2 { font-weight: 700; }
+.markdown-content h3 {  font-weight: 700; color: #2d5a56; }
 `;
 
 export default function AISection({
