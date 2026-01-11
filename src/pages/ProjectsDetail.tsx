@@ -184,12 +184,12 @@ export default function ProjectsDetail() {
 
           <div className="flex flex-col sm:flex-row gap-3 mt-5">
             {currentProject.visit &&
-              (currentProject.visit.startsWith("DNA") ? (
+              (currentProject.visit.startsWith("NDA") ? (
                 <Button
                   className="bg-gray-400 cursor-not-allowed shadow-lg shadow-gray-200 text-white font-semibold flex items-center justify-center gap-2 w-full sm:w-auto"
                   disabled
                 >
-                  <EyeClosed /> DNA - Private Deployment
+                  <EyeClosed /> NDA - Private Deployment
                 </Button>
               ) : (
                 <a
