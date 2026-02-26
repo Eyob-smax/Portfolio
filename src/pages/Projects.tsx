@@ -28,7 +28,7 @@ export default function Projects() {
       setFilteredProjects(projects);
     } else {
       setFilteredProjects(
-        projects.filter((project) => project.class.includes(tab))
+        projects.filter((project) => project.class.includes(tab)),
       );
     }
   };
@@ -87,10 +87,7 @@ export default function Projects() {
           style={{ scrollBehavior: "smooth" }}
         >
           {filteredProjects.map((project, idx) => (
-            <div
-              key={idx}
-              className="flex w-full sm:w-[300px] md:w-[350px] lg:w-[400px]"
-            >
+            <div key={idx} className="flex w-full sm:w-75 md:w-87.5 lg:w-100">
               <ProjectCard project={project} />
             </div>
           ))}

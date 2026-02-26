@@ -43,9 +43,46 @@ import ELDCP_dashboard from "@/assets/projects/ELDCP/dashboard.png";
 import ELDCP_Home from "@/assets/projects/ELDCP/home.png";
 import ELDCP_contributor from "@/assets/projects/ELDCP/submissions.png";
 import ELDCP_Profile from "@/assets/projects/ELDCP/profile.png";
+import ArifQueueHome from "@/assets/projects/arifQueue/landing.png";
+import ArifQueueAI from "@/assets/projects/arifQueue/ai.png";
+import ArifQueueQueue from "@/assets/projects/arifQueue/queue.png";
+import ArifQueueAdmin from "@/assets/projects/arifQueue/admin.png";
+import ArifQueuemap from "@/assets/projects/arifQueue/map.png";
 import type { IProjects } from "@/lib/types";
 
 export const projects: IProjects[] = [
+  {
+    title: "ArifQueue",
+    description:
+      "A digital healthcare platform that provides real-time queue visibility, smart clinic discovery, and AI-powered symptom guidance—helping patients skip long waits and enabling clinics to manage patient flow efficiently across Africa.",
+    image: [
+      { url: ArifQueueHome, imagePos: "top" },
+      { url: ArifQueueAI, imagePos: "top" },
+      { url: ArifQueuemap, imagePos: "top" },
+      { url: ArifQueueAdmin, imagePos: "top" },
+      { url: ArifQueueQueue, imagePos: "top" },
+    ],
+    class: ["healthtech", "queue-management", "saas"],
+    tags: [
+      "Next.js",
+      "Drizzle",
+      "Better Auth",
+      "Socket IO",
+      "Maps & Geolocation",
+      "AI",
+    ],
+    source: "https://github.com/Eyob-smax/AfriQueue",
+    visit: "https://afri-queue-ts2g.vercel.app/",
+    detailedDescription: `ArifQueue is a comprehensive digital healthcare platform designed to reduce waiting times and improve clinic operations by providing real-time queue visibility, smart clinic discovery, and seamless communication between patients and healthcare staff.
+
+Patients can register via email/password, Google OAuth, or phone OTP, set their country and city, discover nearby clinics on an interactive map, and join active queues for specific services (e.g., general consultation, lab tests, vaccination). The platform provides live queue tracking with estimated wait times, notifications as a patient’s turn approaches, and a full history of reservations and completed visits.
+
+Clinic staff manage patient flow through a live queue board: creating and updating service-specific queues, advancing or pausing queues, marking appointments as completed, and handling no-shows. Clinics also access insights like average wait time, daily volume, peak traffic hours, and reservation trends to optimize staffing and operations.
+
+Administrators oversee the entire platform: approving staff applications, managing health centers across multiple countries and cities, monitoring active reservations and queues, enforcing account controls, and maintaining a full audit trail of administrative actions for accountability and compliance.
+
+ArifQueue is built to scale across multiple African countries (including Ethiopia, Kenya, Nigeria, Ghana, South Africa, Tanzania, and Uganda) with country/city-based filtering, secure role-based access control, privacy-first handling of sensitive health data, and multi-channel notifications (in-app and email).`,
+  },
   {
     title: "Parcel Tracking System",
     description:
@@ -435,7 +472,7 @@ export const tech_stack = [
       { name: "Node.js", icon: DiNodejsSmall, proficiency: "Proficient" },
       { name: "Bun", icon: SiBun, proficiency: "Intermediate" },
       { name: "Express.js", icon: SiExpress, proficiency: "Proficient" },
-      { name: "Hono.js", icon: SiHono, proficiency: "Intermediate" },
+      { name: "Hono.js", icon: SiHono, proficiency: "Proficient" },
       { name: "NestJS", icon: SiNestjs, proficiency: "Proficient" },
       { name: "Supabase", icon: SiSupabase, proficiency: "Proficient" },
       { name: "PostgreSQL", icon: SiPostgresql, proficiency: "Proficient" },
