@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Send } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { BASE_URL } from "@/lib/config";
 
 interface ITag {
   id: number;
@@ -23,7 +24,6 @@ interface IPost {
   PostTag: IPostTag[];
 }
 
-export const BASE_URL = "https://portfolio-backend-two-mocha.vercel.app";
 const MAX_POSTS = 9;
 
 const DevJournal = () => {
@@ -33,21 +33,34 @@ const DevJournal = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Aborted on unmount so a slow response cannot call setState on a
+    // component that is gone.
+    const controller = new AbortController();
+
     (async () => {
       try {
-        const res = await fetch(`${BASE_URL}/posts?max=${MAX_POSTS}`);
+        const res = await fetch(`${BASE_URL}/posts?max=${MAX_POSTS}`, {
+          signal: controller.signal,
+        });
         if (!res.ok) throw new Error("Failed to fetch posts");
-        const data = await res.json();
-        if (data.length === 0) throw new Error("No posts available");
-        if (!Array.isArray(data))
-          throw new Error("Invalid data format received");
-        setPosts(data);
+        const data: unknown = await res.json();
+        /*
+         * Shape first, contents second. The old order read `data.length` off
+         * whatever came back before checking it was an array at all, so an
+         * error object from the API slipped past and blew up during render.
+         * An empty list is also not an error — it is an empty section.
+         */
+        if (!Array.isArray(data)) throw new Error("Invalid data format received");
+        setPosts(data as IPost[]);
       } catch (err) {
+        if ((err as Error).name === "AbortError") return;
         setError((err as Error).message);
       } finally {
         setLoading(false);
       }
     })();
+
+    return () => controller.abort();
   }, []);
 
   const allTags = [
@@ -154,7 +167,9 @@ const DevJournal = () => {
             })
           ) : (
             <p className="text-center col-span-full text-gray-500">
-              No posts found for “{selectedTag}”.
+              {posts.length === 0
+                ? "No journal posts yet — check back soon."
+                : `No posts found for “${selectedTag}”.`}
             </p>
           )}
         </div>

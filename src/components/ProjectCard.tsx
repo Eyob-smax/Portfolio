@@ -4,21 +4,28 @@ import { Button } from "./ui/button";
 import { Link } from "react-router";
 
 export default function ProjectCard({ project }: { project: IProjects }) {
+  // Indexing [0] unguarded took the entire projects grid down with a
+  // TypeError the first time a project was added without a screenshot.
+  const cover = project.image[0];
+
   return (
     <div
       className="relative border text-wrap
  pb-2 rounded-lg shadow-md bg-[#F9FBFB] w-78 transition-transform duration-300 cursor-pointer"
     >
       <div className="overflow-hidden max-h-[35%] rounded-lg">
-        <img
-          className={`object-cover h-35 w-full hover:scale-105 transition-transform duration-300 ${
-            project.image[0].imagePos === "center"
-              ? "object-center "
-              : "object-top"
-          }`}
-          src={project.image[0].url}
-          alt={project.title}
-        />
+        {cover ? (
+          <img
+            className={`object-cover h-35 w-full hover:scale-105 transition-transform duration-300 ${
+              cover.imagePos === "center" ? "object-center" : "object-top"
+            }`}
+            src={cover.url}
+            alt={project.title}
+            loading="lazy"
+          />
+        ) : (
+          <div className="h-35 w-full bg-[#e6f1f0]" />
+        )}
       </div>
 
       <div>
@@ -28,19 +35,20 @@ export default function ProjectCard({ project }: { project: IProjects }) {
         </p>
       </div>
       <div className="px-2 mb-8 mt-2 flex flex-wrap gap-2">
-        {project.tags.map((tag, idx) => (
+        {project.tags.map((tag) => (
           <Badge
-            key={idx}
+            key={tag}
             className=" font-semibold bg-[#e6f1f0] text-[#5c8a84]"
           >
             {tag}
           </Badge>
         ))}
       </div>
-      <Button className="text-white hover:bg-[#4a7b74] w-full left-1/2 -translate-x-1/2 absolute bottom-0  bg-[#5c8a84]">
-        <Link className="w-full h-full" to={`/projects/${project.title}`}>
-          View Details
-        </Link>
+      <Button
+        asChild
+        className="text-white hover:bg-[#4a7b74] w-full left-1/2 -translate-x-1/2 absolute bottom-0 bg-[#5c8a84]"
+      >
+        <Link to={`/projects/${project.title}`}>View Details</Link>
       </Button>
     </div>
   );

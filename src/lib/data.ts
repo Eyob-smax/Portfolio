@@ -62,7 +62,7 @@ export const projects: IProjects[] = [
       { url: ArifQueueAdmin, imagePos: "top" },
       { url: ArifQueueQueue, imagePos: "top" },
     ],
-    class: ["healthtech", "queue-management", "saas"],
+    class: ["full-stack", "healthtech", "queue-management", "saas"],
     tags: [
       "Next.js",
       "Drizzle",

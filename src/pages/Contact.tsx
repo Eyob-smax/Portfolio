@@ -8,7 +8,7 @@ import {
   FaGithub,
   FaTelegram,
 } from "react-icons/fa";
-import { BASE_URL } from "./JounalIntegration";
+import { BASE_URL } from "@/lib/config";
 
 const InputField = ({
   label,
@@ -110,7 +110,6 @@ const ContactPage = () => {
       return;
     }
 
-    const controller = new AbortController();
     setLoading(true);
 
     try {
@@ -120,10 +119,14 @@ const ContactPage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
-        signal: controller.signal,
       });
 
-      const data = await response.json();
+      /*
+       * Tolerate a non-JSON body. A proxy timeout or a crash answers with HTML,
+       * and parsing that threw a SyntaxError which surfaced to the visitor as
+       * "Unexpected token '<'" instead of anything about their message.
+       */
+      const data = await response.json().catch(() => null);
 
       if (!response.ok) {
         throw new Error(data?.message || "Failed to send message.");
@@ -144,18 +147,16 @@ const ContactPage = () => {
         message: "",
       });
     } catch (error) {
-      if ((error as Error).name !== "AbortError") {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: (error as Error).message || "Something went wrong.",
-        });
-      }
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: (error as Error).message || "Something went wrong.",
+      });
     } finally {
       setLoading(false);
     }
-
-    return () => controller.abort();
+    // NOTE: this used to end with `return () => controller.abort()`. A submit
+    // handler's return value is discarded, so nothing was ever aborted.
   };
 
   return (
@@ -183,6 +184,7 @@ const ContactPage = () => {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="Enter your name"
+                  required
                 />
                 <InputField
                   label="Email"
@@ -191,6 +193,7 @@ const ContactPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter your email"
+                  required
                 />
               </div>
 
@@ -282,7 +285,7 @@ const ContactPage = () => {
 
       <footer className="w-full border-t border-[#d5dddc] py-6 bg-white">
         <p className="text-center text-[#334d49]/60 text-sm">
-          © 2024 Eyob Simachew. All rights reserved.
+          © {new Date().getFullYear()} Eyob Simachew. All rights reserved.
         </p>
       </footer>
     </div>

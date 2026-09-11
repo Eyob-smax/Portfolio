@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,15 +42,35 @@ export default function ProjectsDetail() {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const headerTitle = currentProject
-    ? `Eyob Simachew | ${currentProject.title.slice(0, 20) + "..."}`
+    ? `Eyob Simachew | ${
+        currentProject.title.length > 20
+          ? `${currentProject.title.slice(0, 20)}...`
+          : currentProject.title
+      }`
     : "Eyob Simachew | Project Not Found";
 
+  const stopAutoSlide = useCallback(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = null;
+  }, []);
+
+  const startAutoSlide = useCallback(() => {
+    if (images.length <= 1) return;
+    stopAutoSlide();
+    intervalRef.current = setInterval(() => {
+      setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    }, 2000);
+  }, [images.length, stopAutoSlide]);
+
   useEffect(() => {
-    if (images.length > 1) {
-      startAutoSlide();
-    }
-    return () => clearInterval(intervalRef.current!);
-  }, [images.length]);
+    startAutoSlide();
+    return stopAutoSlide;
+  }, [startAutoSlide, stopAutoSlide]);
+
+  // A shorter project reached through a link from a longer one could leave the
+  // index pointing past the end of the new gallery, showing a blank frame.
+  useEffect(() => setCurrentIndex(0), [id]);
+
   if (!currentProject) {
     return (
       <section className="relative inset-0 min-h-screen bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px] bg-[#F6F7F8] flex flex-col w-full px-4 sm:px-6 lg:px-12">
@@ -59,34 +79,26 @@ export default function ProjectsDetail() {
           <AlertTriangle className="w-16 h-16 text-red-500 mb-4" />
           <h1 className="text-3xl font-bold mb-2">Project Not Found</h1>
           <p className="text-gray-600 mb-6">
-            We couldn't find a project with the ID: **{id}**.
+            We couldn't find a project with the ID: <strong>{id}</strong>.
           </p>
-          <Link to={"/#projects"}>
-            <Button>
+          <Button asChild>
+            <Link to={"/#projects"}>
               <ArrowLeft className="mr-2 h-4 w-4" /> Go back to projects
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
       </section>
     );
   }
 
-  const startAutoSlide = () => {
-    if (images.length <= 1) return;
-
-    intervalRef.current = setInterval(() => {
-      setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-    }, 2000);
-  };
-
   const handleNext = () => {
-    clearInterval(intervalRef.current!);
+    stopAutoSlide();
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
     startAutoSlide();
   };
 
   const handlePrev = () => {
-    clearInterval(intervalRef.current!);
+    stopAutoSlide();
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
     startAutoSlide();
   };
@@ -114,7 +126,7 @@ export default function ProjectsDetail() {
             // Only add mouse handlers if there is more than one image
             {...(images.length > 1
               ? {
-                  onMouseEnter: () => clearInterval(intervalRef.current!),
+                  onMouseEnter: stopAutoSlide,
                   onMouseLeave: startAutoSlide,
                 }
               : {})}
@@ -130,8 +142,9 @@ export default function ProjectsDetail() {
                       key={i}
                       src={img.url}
                       alt={`${currentProject.title} screenshot ${i + 1}`}
-                      className={`object-cover hover:scale-105 duration-300 w-full h-70 shrink-0 object-${
-                        img.imagePos || "center"
+                      loading={i === 0 ? "eager" : "lazy"}
+                      className={`object-cover hover:scale-105 duration-300 w-full h-70 shrink-0 ${
+                        img.imagePos === "top" ? "object-top" : "object-center"
                       }`}
                     />
                   ))}
@@ -141,13 +154,15 @@ export default function ProjectsDetail() {
                   <>
                     <button
                       onClick={handlePrev}
-                      className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-2 shadow-md"
+                      aria-label="Previous screenshot"
+                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white rounded-full p-2 shadow-md cursor-pointer"
                     >
                       <ChevronLeft />
                     </button>
                     <button
                       onClick={handleNext}
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-2 shadow-md"
+                      aria-label="Next screenshot"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white rounded-full p-2 shadow-md cursor-pointer"
                     >
                       <ChevronRight />
                     </button>
@@ -192,15 +207,18 @@ export default function ProjectsDetail() {
                   <EyeClosed /> NDA - Private Deployment
                 </Button>
               ) : (
-                <a
-                  href={currentProject.visit}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Button
+                  asChild
+                  className="bg-[#13A4EC] hover:bg-blue-500 cursor-pointer shadow-lg shadow-blue-200 text-white font-semibold flex items-center justify-center gap-2 w-full sm:w-auto"
                 >
-                  <Button className="bg-[#13A4EC] hover:bg-blue-500 cursor-pointer shadow-lg shadow-blue-200 text-white font-semibold flex items-center justify-center gap-2 w-full sm:w-auto">
+                  <a
+                    href={currentProject.visit}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <Eye /> Live demo
-                  </Button>
-                </a>
+                  </a>
+                </Button>
               ))}
             {currentProject.source &&
               (currentProject.source.startsWith("NDA") ? (
@@ -208,18 +226,21 @@ export default function ProjectsDetail() {
                   className="bg-gray-400 cursor-not-allowed shadow-lg shadow-gray-200 text-black font-semibold flex items-center justify-center gap-2 w-full sm:w-auto"
                   disabled
                 >
-                  <EyeClosed /> DNA - Private Repository
+                  <EyeClosed /> NDA - Private Repository
                 </Button>
               ) : (
-                <a
-                  href={currentProject.source}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Button
+                  asChild
+                  className="bg-[#E8EBEE] hover:bg-[#E8EBEE] cursor-pointer shadow-lg shadow-slate-900/15 text-black font-semibold flex items-center justify-center gap-2 w-full sm:w-auto"
                 >
-                  <Button className="bg-[#E8EBEE] hover:bg-[#E8EBEE] cursor-pointer shadow-lg shadow-slate-900/15 text-black font-semibold flex items-center justify-center gap-2 w-full sm:w-auto">
+                  <a
+                    href={currentProject.source}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <Code /> Source Code
-                  </Button>
-                </a>
+                  </a>
+                </Button>
               ))}
           </div>
         </div>

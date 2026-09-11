@@ -56,6 +56,7 @@ export default function Notice({
         </div>
         <button
           onClick={() => setVisible(false)}
+          aria-label="Dismiss notice"
           className="flex h-7 w-7 items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white transition"
         >
           <MdClose className="text-base" />

@@ -9,11 +9,17 @@ import remarkGfm from "remark-gfm";
 import type { TConversation } from "./Home";
 import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
+import { STREAM_ENDPOINT } from "@/lib/config";
 
-const STREAM_ENDPOINT =
-  "https://portfolio-backend-two-mocha.vercel.app/ai/stream";
 const MAX_INPUT_LENGTH = 200;
-const TIMEOUT_DURATION = 100_000;
+/**
+ * Idle timeout, not a total budget.
+ *
+ * It is reset on every chunk, so a long answer that keeps arriving is never
+ * cut off — only a stream that has genuinely gone quiet is.
+ */
+const IDLE_TIMEOUT = 30_000;
+const THINKING = "Thinking...";
 
 const markdownStyles = `
   .markdown-content {
@@ -79,77 +85,118 @@ export default function AISection({
     };
   }, []);
 
-  function startStream(topic: string, aiMessageId: string) {
-    eventSourceRef.current?.close();
-    hasReceivedData.current = false;
-
-    const es = new EventSource(
-      `${STREAM_ENDPOINT}?topic=${encodeURIComponent(topic)}`
-    );
-    eventSourceRef.current = es;
-
-    const timeout = setTimeout(() => {
-      setConvs((prev) => {
-        if (!prev) return [];
-        return prev.map((m) =>
-          m.id === aiMessageId
+  /** Replaces one message's body in place, leaving the rest of the log alone. */
+  const setMessage = useCallback(
+    (id: string, next: string | ((current: string) => string)) => {
+      setConvs((prev) =>
+        (prev ?? []).map((m) =>
+          m.id === id
             ? {
                 ...m,
-                message: "Warning: Stream timed out. Check your connection.",
+                message: typeof next === "function" ? next(m.message) : next,
               }
             : m
+        )
+      );
+    },
+    [setConvs]
+  );
+
+  const startStream = useCallback(
+    (topic: string, aiMessageId: string) => {
+      eventSourceRef.current?.close();
+      hasReceivedData.current = false;
+
+      const es = new EventSource(
+        `${STREAM_ENDPOINT}?topic=${encodeURIComponent(topic)}`
+      );
+      eventSourceRef.current = es;
+
+      let timeout: ReturnType<typeof setTimeout>;
+
+      const finish = () => {
+        clearTimeout(timeout);
+        setIsLoading(false);
+        // Without an explicit close the browser reconnects on its own a few
+        // seconds after the server hangs up, replaying the whole answer into
+        // the log a second time.
+        es.close();
+      };
+
+      const armTimeout = () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          setMessage(aiMessageId, (current) =>
+            current === THINKING
+              ? "The assistant took too long to respond. Please try again."
+              : current
+          );
+          finish();
+        }, IDLE_TIMEOUT);
+      };
+
+      armTimeout();
+
+      /*
+       * Named events, and the payload is JSON.
+       *
+       * The server sends one `data:` line per chunk with the text JSON-encoded,
+       * because answers are Markdown and a raw chunk containing a newline
+       * splits into two SSE fields — everything after the newline was being
+       * read as a field name and dropped, which is what made lists and code
+       * blocks arrive mangled.
+       */
+      es.addEventListener("chunk", (e: MessageEvent) => {
+        let text: string;
+        try {
+          text = JSON.parse(e.data) as string;
+        } catch (err) {
+          console.error("SSE parse error:", err, "raw:", e.data);
+          return;
+        }
+        hasReceivedData.current = true;
+        armTimeout();
+        setMessage(aiMessageId, (current) =>
+          (current === THINKING ? "" : current) + text
         );
       });
-      es.close();
-      setIsLoading(false);
-    }, TIMEOUT_DURATION);
 
-    es.onmessage = (e: MessageEvent) => {
-      try {
-        const chunk = e.data;
+      /*
+       * Named `failed`, not `error`: EventSource already dispatches "error"
+       * for transport failures, so a server-sent event of that name lands in
+       * the same handler as a dropped connection and the two become
+       * indistinguishable.
+       */
+      es.addEventListener("failed", (e: MessageEvent) => {
+        let message = "The assistant hit an error. Please try again.";
+        try {
+          message = JSON.parse(e.data) as string;
+        } catch {
+          // Keep the generic message.
+        }
         hasReceivedData.current = true;
-        setConvs((prev) => {
-          if (!prev) return [];
-          return prev.map((m) =>
-            m.id === aiMessageId
-              ? {
-                  ...m,
-                  message: m.message.replace("Thinking...", "") + chunk,
-                }
-              : m
-          );
-        });
-        scrollToBottom();
-      } catch (err) {
-        console.error("SSE parse error:", err, "raw:", e.data);
-      }
-    };
+        setMessage(aiMessageId, (current) =>
+          current === THINKING ? message : `${current}
 
-    es.onerror = () => {
-      clearTimeout(timeout);
-      if (!hasReceivedData.current) {
-        setConvs((prev) => {
-          if (!prev) return [];
-          return prev.map((m) =>
-            m.id === aiMessageId
-              ? {
-                  ...m,
-                  message: "Warning: Stream failed or ended unexpectedly.",
-                }
-              : m
-          );
-        });
-      }
-      setIsLoading(false);
-      es.close();
-    };
+_${message}_`
+        );
+        finish();
+      });
 
-    es.addEventListener("end", () => {
-      clearTimeout(timeout);
-      setIsLoading(false);
-      es.close();
-    });
-  }
+      es.addEventListener("end", finish);
+
+      es.onerror = () => {
+        if (!hasReceivedData.current) {
+          setMessage(
+            aiMessageId,
+            "Could not reach the assistant. Please check your connection and try again."
+          );
+        }
+        finish();
+      };
+    },
+    [setMessage]
+  );
 
   async function addConversation(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -177,7 +224,7 @@ export default function AISection({
     setConvs((prev) => [
       ...(prev || []),
       { id: userId, message: userMessage, type: "user" },
-      { id: aiId, message: "Thinking...", type: "ai" },
+      { id: aiId, message: THINKING, type: "ai" },
     ]);
 
     setInputValue("");
@@ -238,12 +285,14 @@ export default function AISection({
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
-                          a: ({ node, ...props }) => (
+                          // `node` is the mdast node, not a label — it was
+                          // being interpolated into the title attribute and
+                          // rendering as "link-[object Object]" on every link.
+                          a: ({ node: _node, ...props }) => (
                             <a
                               {...props}
                               target="_blank"
                               rel="noopener noreferrer"
-                              title={`link-${node}`}
                               className="text-[#4b7f7a] hover:underline"
                             />
                           ),

@@ -92,7 +92,10 @@ export default function Home() {
               I build stuff for the Web.
             </p>
             <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button className="bg-[#5c8a84] hover:bg-[#4b7f7a] shadow-lg shadow-[#4b7f7a] text-white font-semibold">
+              <Button
+                asChild
+                className="bg-[#5c8a84] hover:bg-[#4b7f7a] shadow-lg shadow-[#4b7f7a] text-white font-semibold"
+              >
                 <a href="/Resume.pdf" download="Eyob_Simachew_Resume.pdf">
                   Download Resume
                 </a>
